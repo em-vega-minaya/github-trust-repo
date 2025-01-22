@@ -21,6 +21,9 @@ Parameters:
   AWSRegion:
     Type: String
     Description: AWS Region
+  LIBbucket:
+    Type: String
+    Description: AWS Region
 
 Resources:
   rLambdaInvokeMisupply:
@@ -36,7 +39,7 @@ Resources:
         Variables:
           ENVIRONMENT: !Ref Stage
           REGION: !Ref AWSRegion
-      CodeUri: ./stabe_lib/lambda/misupply/src
+      CodeUri: !Sub ./{LIBbucket}/lambda/misupply/src
       Events:
         CronTrigger:
           Type: Schedule

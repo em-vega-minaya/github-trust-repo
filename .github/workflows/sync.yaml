@@ -107,7 +107,7 @@ jobs:
               deploymentDate=$TIMESTAMP \
               awswranglerlayerpy39MD5=$awswranglerlayerpy39MD5 \
               requestlayerpy312MD5=$requestlayerpy312MD5 \
-              AWSRegion=$REGION
+              AWSRegion=$REGION LIBbucket=$$AWS_BUCKET_NAME
           aws cloudformation describe-stack-events --stack-name $STACK_NAME --max-items 5 --output table
 
       - name: Deploy ATHENA
