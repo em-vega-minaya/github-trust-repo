@@ -1,0 +1,61 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Template para crear un único bucket S3 con subdirectorios específicos
+
+Parameters:
+  Stage:
+    Type: String
+    Description: Ambiente (dev, qa, prod)
+    AllowedValues:
+      - dev
+      - qa
+      - prod
+  pTeamName:
+    Description: "Name of the team owning the pipeline (all lowercase, no symbols or spaces)"
+    Type: String
+    Default: prueba
+  pcuenta:
+    Description: "Name of the count owning the pipeline (all lowercase, no symbols or spaces)"
+    Type: String
+    Default: josemaria
+  pProyecto:
+    Description: "Name of the count owning the pipeline (all lowercase, no symbols or spaces)"
+    Type: String
+    Default: prueba
+  ArtifactsBucket:
+    Type: String
+    Description: Artifact Name
+  AWSRegion:
+    Type: String
+    Description: Región de AWS
+  AWSAccountId:
+    Type: String
+    Description: ID de la cuenta de AWS
+
+Resources:
+  ArtifactsBucketlib:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Delete
+    Properties:
+      AccessControl: Private
+      BucketName: !Ref ArtifactsBucket
+  
+  daEcodistribucionBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Delete
+    Properties:
+      BucketName: !Join ['-', [!Ref pTeamName, !Ref pcuenta, "stage", !Ref Stage]]
+      AccessControl: Private
+
+  daEcodistribucionBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Delete
+    Properties:
+      BucketName: !Join ['-', ["aws-athena-query-results", !Ref AWSRegion, !Ref AWSAccountId]]
+      AccessControl: Private
+
+Outputs:
+  ArtifactsBucketlibName:
+    Description: Nombre del bucket creado
+    Value: !Ref ArtifactsBucketlib
+    Export:
+      Name: da-ArtifactsBucketlibName

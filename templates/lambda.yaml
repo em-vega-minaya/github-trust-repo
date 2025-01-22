@@ -1,0 +1,88 @@
+
+Conversación abierta. 1 mensaje leído.
+
+Ir al contenido
+Uso de Correo de Universidad Ricardo Palma con lectores de pantalla
+
+1 de 1.930
+(sin asunto)
+Recibidos
+
+Josemaria Paucar Soto <202312432@urp.edu.pe>
+17:12 (hace 10 minutos)
+para mí
+
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Parameters:
+  Stage:
+    Type: "String"
+    Description: Environment name (dev/qa/prod)
+    AllowedValues:
+      - dev
+      - qa
+      - prod
+  pTeamName:
+    Description: "Name of the team owning the pipeline (all lowercase, no symbols or spaces)"
+    Type: String
+    Default: da
+  pCuenta:
+    Description: "Name of the account owning the pipeline (all lowercase, no symbols or spaces)"
+    Type: String
+    Default: ecodistribucion
+  pProyecto:
+    Description: "Name of the project owning the pipeline (all lowercase, no symbols or spaces)"
+    Type: String
+    Default: misupply
+  AWSRegion:
+    Type: String
+    Description: AWS Region
+
+Resources:
+  rLambdaInvokeMisupply:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Join ['-', [ "lambda", !Ref pTeamName, !Ref pProyecto, !Ref Stage ]]
+      Description: "Gatillado cada día a las 21:00 UTC por EventBridge"
+      Runtime: python3.9
+      MemorySize: 2048
+      Timeout: 900
+      Role: !ImportValue LambdaMisupplyRole-Arn
+      Environment:
+        Variables:
+          ENVIRONMENT: !Ref Stage
+          REGION: !Ref AWSRegion
+      CodeUri: .
+      Handler: index.handler
+      Events:
+        CronTrigger:
+          Type: Schedule
+          Properties:
+            Schedule: "cron(0 21 ? * * *)"
+      Layers:
+        - !Ref dataWranglerLayer
+        - !Ref requestLayer
+
+  dataWranglerLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      CompatibleRuntimes:
+        - python3.9
+      ContentUri:
+        Bucket: !ImportValue da-ArtifactsBucketlibName
+        Key: layers/awswrangler-layer-py3-9.zip
+      Description: Data Wrangler Layer for Python 3.9
+      LayerName: !Sub awswrangler-layer-py3-9-${Stage}
+
+  requestLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      CompatibleRuntimes:
+        - python3.12
+      ContentUri:
+        Bucket: !ImportValue da-ArtifactsBucketlibName
+        Key: layers/request-py3-12.zip
+      Description: Request Layer for Python 3.12
+      LayerName: !Sub request-py3-12-${Stage}
+

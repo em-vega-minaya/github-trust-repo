@@ -1,0 +1,81 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: template para crear roles y políticas IAM
+
+Parameters:
+  Stage:
+    Type: String
+    Description: Ambiente
+    AllowedValues:
+      - dev
+      - qa
+      - prod
+  pTeamName:
+    Description: "Name of the team owning the pipeline (all lowercase, no symbols or spaces)"
+    Type: String
+    Default: prueba
+  AWSRegion:
+    Type: String
+    Description: Región de AWS
+  AWSAccountId:
+    Type: String
+    Description: ID de la cuenta de AWS
+  pcuenta:
+    Description: "Name of the count owning the pipeline (all lowercase, no symbols or spaces)"
+    Type: String
+    Default: josemaria
+  pProyecto:
+    Description: "Name of the count owning the pipeline (all lowercase, no symbols or spaces)"
+    Type: String
+    Default: prueba
+
+Resources:
+
+  LambdaMisupplyRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "role-${pTeamName}-${pProyecto}-${Stage}"
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole"
+        - "arn:aws:iam::aws:policy/AmazonSNSFullAccess"
+        - "arn:aws:iam::aws:policy/AmazonAthenaFullAccess"
+        - "arn:aws:iam::aws:policy/SecretsManagerReadWrite"
+        - "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
+        - "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
+      MaxSessionDuration: 43200
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - "glue.amazonaws.com"
+                - "lambda.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Path: "/"
+      Policies:
+        - PolicyName: !Sub "${pTeamName}-${pcuenta}-access-to-s3-policy"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: AccessToS3Policy
+                Effect: Allow
+                Action: s3:*
+                Resource:
+                  - !Sub "arn:aws:s3:::${pTeamName}-${pcuenta}-stage-${Stage}/*"
+              - Sid: ReadSecretsManager
+                Effect: Allow
+                Action:
+                  - "secretsmanager:GetSecretValue"
+                  - "secretsmanager:DescribeSecret"
+                  - "secretsmanager:ListSecrets"
+                Resource:
+                  - !Sub "arn:aws:secretsmanager:${AWSRegion}:${AWSAccountId}:secret:*"
+
+
+Outputs:
+  LambdaMisupplyRole:
+    Description: LambdaMisupplyRole Arn
+    Value: !GetAtt LambdaMisupplyRole.Arn
+    Export:
+      Name: LambdaMisupplyRole-Arn

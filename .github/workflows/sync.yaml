@@ -13,20 +13,110 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     env:
-      AWS_BUCKET_NAME: "prueba-exampe-josemaria-git"   
+      AWS_BUCKET_NAME: "prueba-exampe-josemaria-git"
+      REGION: "us-east-1"
+      ARTIFACTS_S3: "test-artifacts-dev-josemaria"
+      AWS_ACCOUNT_ID: "345345345345"
+      AWS_ACCOUNT_OPTIMIZADOR: "5345345345"   
     steps:
-    # 1. Revisa el código del repositorio
-    - name: Checkout Repo
-      uses: actions/checkout@v2
+      - name: Set timestamp
+        run: |
+          echo "TIMESTAMP=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
 
-    # 2. Configura las credenciales de AWS
-    - name: connect to AWS
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        role-session-name: awssyncsession
-        role-to-assume: ${{ secrets.AWS_IAM_ROLE }}
-        aws-region: ${{ secrets.AWS_REGION }}
+      - name: Define environment
+        run: |
+          if [[ "${{ github.base_ref }}" == "develop" ]]; then
+            echo "ENVIRONMENT=dev" >> $GITHUB_ENV
+          else
+            echo "ENVIRONMENT=${{ github.base_ref }}" >> $GITHUB_ENV
+          fi
 
-    # 3. Sube el archivo a S3
-    - name: sync bucket
-      run: aws s3 sync ./files/ s3://$AWS_BUCKET_NAME --delete
+    
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+    
+        # 2. Configura las credenciales de AWS
+      - name: connect to AWS
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-session-name: awssyncsession
+          role-to-assume: ${{ secrets.AWS_IAM_ROLE }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Deploy S3
+        id: s3
+        shell: bash
+        env:
+          S3_STACK_NAME: da-josemaria-s3
+        run: |
+          aws cloudformation deploy --template-file templates/s3.yaml \
+            --region $REGION \
+            --stack-name $S3_STACK_NAME \
+            --capabilities CAPABILITY_NAMED_IAM \
+            --no-fail-on-empty-changeset \
+            --parameter-overrides Stage=$ENVIRONMENT \
+              ArtifactsBucket=$ARTIFACTS_S3 AWSRegion=$REGION \
+              AWSAccountId=$AWS_ACCOUNT_ID
+          aws cloudformation describe-stack-events --stack-name $S3_STACK_NAME --max-items 5
+
+      - name: Deploy IAM
+        id: iam
+        shell: bash
+        env:
+          STACK_NAME: da-josemaria-iam
+        run: |
+          aws cloudformation deploy --template-file templates/iam.yaml \
+            --region $REGION \
+            --stack-name $STACK_NAME \
+            --capabilities CAPABILITY_NAMED_IAM \
+            --no-fail-on-empty-changeset \
+            --parameter-overrides Stage=$ENVIRONMENT \
+              AWSRegion=$REGION AWSAccountId=$AWS_ACCOUNT_ID
+          aws cloudformation describe-stack-events --stack-name $STACK_NAME --max-items 5
+
+      - name: Upload layers to S3
+        run: |
+          aws s3 cp ./layers/awswrangler-layer-py3-9.zip s3://$ARTIFACTS_S3/layers/
+          aws s3 cp ./layers/request-layer-py3-12.zip s3://$ARTIFACTS_S3/layers/
+
+          awswrangler_layer_py3_9_md5=$(md5sum ./layers/awswrangler-layer-py3-9.zip | awk '{print $1}')
+          request_layer_py3_12_md5=$(md5sum ./layers/request-layer-py3-12.zip | awk '{print $1}')
+
+          echo "awswranglerlayerpy39MD5=$awswrangler_layer_py3_9_md5" >> $GITHUB_ENV
+          echo "requestlayerpy312MD5=$request_layer_py3_12_md5" >> $GITHUB_ENV
+          
+      - name: Deploy Lambda
+        id: lambda
+        shell: bash
+        env:
+          STACK_NAME: da-josemaria-lambda
+        run: |
+          aws cloudformation deploy --template-file templates/lambda.yaml \
+            --region $REGION \
+            --stack-name $STACK_NAME \
+            --capabilities CAPABILITY_NAMED_IAM \
+            --no-fail-on-empty-changeset \
+            --parameter-overrides Stage=$ENVIRONMENT \
+              deploymentDate=$TIMESTAMP \
+              awswranglerlayerpy39MD5=$awswranglerlayerpy39MD5 \
+              requestlayerpy312MD5=$requestlayerpy312MD5 \
+              AWSRegion=$REGION
+          aws cloudformation describe-stack-events --stack-name $STACK_NAME --max-items 5 --output table
+
+      - name: Deploy ATHENA
+        id: athena
+        shell: bash
+        if: contains(github.event.pull_request.title, '-athena') || contains(github.event.pull_request.title, '-all')
+        env:
+          STACK_NAME: da-josemaria-athena
+        run: |
+          aws cloudformation deploy --template-file templates/athena.yaml \
+            --region $REGION \
+            --stack-name $STACK_NAME \
+            --capabilities CAPABILITY_NAMED_IAM \
+            --no-fail-on-empty-changeset \
+            --parameter-overrides Stage=$ENVIRONMENT \
+              AWSRegion=$REGION AWSAccountId=$AWS_ACCOUNT_ID
+          aws cloudformation describe-stack-events --stack-name $STACK_NAME --max-items 5
+    
+  
