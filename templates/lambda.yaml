@@ -39,7 +39,9 @@ Resources:
         Variables:
           ENVIRONMENT: !Ref Stage
           REGION: !Ref AWSRegion
-      CodeUri: !Sub ./{LIBbucket}/lambda/misupply/src
+      CodeUri:
+      Bucket: !Ref LIBbucket
+      Key: lambda/optimizador/src/lambda_functions.py
       Events:
         CronTrigger:
           Type: Schedule
