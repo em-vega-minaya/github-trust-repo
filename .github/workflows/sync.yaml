@@ -17,7 +17,8 @@ jobs:
       REGION: "us-east-1"
       ARTIFACTS_S3: "test-artifacts-dev-josemaria"
       AWS_ACCOUNT_ID: "345345345345"
-      AWS_ACCOUNT_OPTIMIZADOR: "5345345345"   
+      AWS_ACCOUNT_OPTIMIZADOR: "5345345345"  
+      Stage: "dev" 
     steps:
       - name: Set timestamp
         run: |
