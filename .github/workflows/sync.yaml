@@ -60,6 +60,12 @@ jobs:
               AWSAccountId=$AWS_ACCOUNT_ID
           aws cloudformation describe-stack-events --stack-name $S3_STACK_NAME --max-items 5
 
+      - name: Sync Folder to S3
+        id: sync-folder
+        run: |
+          aws s3 sync ./stabe_lib s3://$AWS_BUCKET_NAME/
+          echo "Folder synchronized to S3 bucket: $AWS_BUCKET_NAME"
+      
       - name: Deploy IAM
         id: iam
         shell: bash

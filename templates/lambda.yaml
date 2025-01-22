@@ -36,8 +36,7 @@ Resources:
         Variables:
           ENVIRONMENT: !Ref Stage
           REGION: !Ref AWSRegion
-      CodeUri: .
-      Handler: index.handler
+      CodeUri: ./lambda/misupply/src
       Events:
         CronTrigger:
           Type: Schedule

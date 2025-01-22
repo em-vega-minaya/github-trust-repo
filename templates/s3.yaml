@@ -50,9 +50,22 @@ Resources:
       BucketName: !Join ['-', ["aws-athena-query-results", !Ref AWSRegion, !Ref AWSAccountId]]
       AccessControl: Private
 
+  daEcodistribucionStagelib:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Delete
+    Properties:
+      BucketName: !Join ['-', ["koa", !Ref pProyecto, !Ref AWSAccountId]]
+      AccessControl: Private
+
 Outputs:
   ArtifactsBucketlibName:
     Description: Nombre del bucket creado
     Value: !Ref ArtifactsBucketlib
     Export:
       Name: da-ArtifactsBucketlibName
+
+  daEcodistribucionStagelib:
+    Description: Nombre del bucket creado
+    Value: !Ref daEcodistribucionStagelib
+    Export:
+      Name: da-daEcodistribucionStagelib
