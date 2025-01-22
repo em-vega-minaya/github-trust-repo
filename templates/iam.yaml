@@ -4,11 +4,8 @@ Description: template para crear roles y políticas IAM
 Parameters:
   Stage:
     Type: String
-    Description: Ambiente
-    AllowedValues:
-      - dev
-      - qa
-      - prod
+    Description: Ambiente (dev, qa, prod)
+    Default: dev
   pTeamName:
     Description: "Name of the team owning the pipeline (all lowercase, no symbols or spaces)"
     Type: String
