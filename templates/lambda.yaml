@@ -39,9 +39,7 @@ Resources:
         Variables:
           ENVIRONMENT: !Ref Stage
           REGION: !Ref AWSRegion
-      CodeUri:
-      Bucket: !Ref LIBbucket
-      Key: lambda/optimizador/src/lambda_functions.py
+      CodeUri: s3://prueba-exampe-josemaria-git/lambda/optimizador/src/lambda_functions.py
       Events:
         CronTrigger:
           Type: Schedule
