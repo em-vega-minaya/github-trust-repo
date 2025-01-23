@@ -44,10 +44,10 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       # Sincroniza archivos locales con S3
-      - name: Sync Folder to S3
-        run: |
-          aws s3 sync ./stabe_lib s3://$AWS_BUCKET_NAME/
-          echo "Folder synchronized to S3 bucket: $AWS_BUCKET_NAME"
+      # - name: Sync Folder to S3
+      #  run: |
+      #    aws s3 sync ./stabe_lib s3://$AWS_BUCKET_NAME/
+      #    echo "Folder synchronized to S3 bucket: $AWS_BUCKET_NAME"
 
       # Despliegue del stack S3
       - name: Deploy S3
@@ -86,19 +86,47 @@ jobs:
           echo "awswranglerlayerpy39MD5=$awswrangler_layer_py3_9_md5" >> $GITHUB_ENV
           echo "requestlayerpy312MD5=$request_layer_py3_12_md5" >> $GITHUB_ENV
 
-       # Construir la plantilla SAM
-      - name: Build Lambda Function
+      - name: Deploy Lambda
+        id: lambda
+        shell: bash
+        env:
+          STACK_NAME: da-josemaria-lambda
         run: |
-          sam build --template-file templates/lambda.yaml --use-container
+          # Crear una carpeta temporal para empaquetar
+          TEMP_DIR=$(mktemp -d)
+          cp -R ./stage_lib/* $TEMP_DIR/
 
-      # Desplegar la plantilla SAM
-      - name: Deploy Lambda Function
-        run: |
-          sam deploy \
-            --template-file .aws-sam/build/template.yaml \
-            --stack-name da-josemaria-lambda \
-            --capabilities CAPABILITY_NAMED_IAM \
+          # Crear paquetes individuales por subdirectorio dentro de stage_lib
+          for dir in $(find $TEMP_DIR -type d); do
+            RELATIVE_PATH=${dir#$TEMP_DIR/}
+            ZIP_FILE=${RELATIVE_PATH}.zip
+            ZIP_DEST="lambda/${RELATIVE_PATH}/src"
+            
+            # Evitar errores en el directorio raíz vacío
+            if [ "$RELATIVE_PATH" != "$TEMP_DIR" ]; then
+              echo "Empaquetando $RELATIVE_PATH en $ZIP_FILE..."
+              zip -r $ZIP_FILE $dir/*
+              
+              # Subir a S3 dinámicamente
+              echo "Subiendo $ZIP_FILE a s3://$AWS_BUCKET_NAME/$ZIP_DEST/$ZIP_FILE..."
+              aws s3 cp $ZIP_FILE s3://$AWS_BUCKET_NAME/$ZIP_DEST/
+            fi
+          done
+
+          # Limpiar el directorio temporal
+          rm -rf $TEMP_DIR
+
+          # Desplegar la plantilla SAM
+          sam package \
+            --template-file templates/lambda.yaml \
             --s3-bucket $AWS_BUCKET_NAME \
+            --s3-prefix lambda \
+            --output-template-file packaged-template.yaml
+
+          sam deploy \
+            --template-file packaged-template.yaml \
+            --stack-name $STACK_NAME \
+            --capabilities CAPABILITY_NAMED_IAM \
             --region $REGION \
             --parameter-overrides \
               ParameterKey=Stage,ParameterValue=$ENVIRONMENT \
