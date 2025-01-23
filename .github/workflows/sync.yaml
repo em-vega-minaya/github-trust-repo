@@ -106,17 +106,21 @@ jobs:
             # Ruta de destino en S3
             S3_DEST="lambda/${SUBDIR_NAME}/src/${ZIP_FILE}"
             
-            # Crear el archivo ZIP para el subdirectorio
-            echo "Empaquetando $SUBDIR_NAME en $ZIP_FILE..."
-            zip -r $ZIP_FILE $dir > /dev/null
+            # Verificar que el subdirectorio no esté vacío
+            if [ "$(ls -A $dir)" ]; then
+              echo "Empaquetando $SUBDIR_NAME en $ZIP_FILE..."
+              zip -r $ZIP_FILE $dir > /dev/null
 
-            # Subir el archivo ZIP a la ubicación correspondiente en S3
-            echo "Subiendo $ZIP_FILE a s3://$AWS_BUCKET_NAME/$S3_DEST..."
-            aws s3 cp $ZIP_FILE s3://$AWS_BUCKET_NAME/$S3_DEST
-            
-            # Limpiar el archivo ZIP local
-            echo "Eliminando el archivo ZIP local $ZIP_FILE..."
-            rm $ZIP_FILE
+              # Subir el archivo ZIP a S3
+              echo "Subiendo $ZIP_FILE a s3://$AWS_BUCKET_NAME/$S3_DEST..."
+              aws s3 cp $ZIP_FILE s3://$AWS_BUCKET_NAME/$S3_DEST
+              
+              # Limpiar el archivo ZIP local
+              echo "Eliminando el archivo ZIP local $ZIP_FILE..."
+              rm $ZIP_FILE
+            else
+              echo "El subdirectorio $SUBDIR_NAME está vacío. Saltando."
+            fi
           done
 
           # Construir el proyecto SAM
@@ -142,6 +146,7 @@ jobs:
               ParameterKey=Stage,ParameterValue=$ENVIRONMENT \
               ParameterKey=AWSRegion,ParameterValue=$REGION \
               ParameterKey=LIBbucket,ParameterValue=$AWS_BUCKET_NAME
+
 
 
 
