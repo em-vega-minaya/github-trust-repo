@@ -32,7 +32,7 @@ Resources:
       MemorySize: 256
       Timeout: 30
       Role: !ImportValue LambdaMisupplyRole-Arn
-      CodeUri:  prueba-exampe-josemaria-git/lambda/stage_misupply/src/
+      CodeUri:  ./lambda/stage_misupply/src/
       Environment:
         Variables:
           ENVIRONMENT: !Ref Stage
