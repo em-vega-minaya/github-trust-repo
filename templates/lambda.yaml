@@ -1,4 +1,4 @@
-AWSTemplateFormatVersion: '2010-09-09'
+AWSTemplateFormatVersion: 2010-09-09
 
 Parameters:
   Stage:
@@ -48,7 +48,7 @@ Resources:
         - !Ref requestLayer
       
   dataWranglerLayer:
-    Type: AWS::Serverless::LayerVersion
+    Type: AWS::Lambda::LayerVersion
     Properties:
       CompatibleRuntimes:
         - python3.9
@@ -59,7 +59,7 @@ Resources:
       LayerName: !Sub awswrangler-layer-py3-9-${Stage}
 
   requestLayer:
-    Type: AWS::Serverless::LayerVersion
+    Type: AWS::Lambda::LayerVersion
     Properties:
       CompatibleRuntimes:
         - python3.12
@@ -68,4 +68,12 @@ Resources:
         Key: layers/request-py3-12.zip
       Description: Request Layer for Python 3.12
       LayerName: !Sub request-py3-12-${Stage}
+
+
+Outputs: 
+  LambdaApolloServer:
+    Description: LambdaApolloServer Arn
+    Value: !GetAtt LambdaApolloServer.Arn
+    Export:
+      Name: AK-LambdaApolloServerArn
 
