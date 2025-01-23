@@ -1,29 +1,15 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
+Description: Template para definir una función Lambda que utiliza un rol IAM externo y un bucket específico
 
 Parameters:
   Stage:
     Type: String
     Description: Ambiente (dev, qa, prod)
     Default: dev
-  pTeamName:
-    Description: "Name of the team owning the pipeline (all lowercase, no symbols or spaces)"
-    Type: String
-    Default: da
-  pCuenta:
-    Description: "Name of the account owning the pipeline (all lowercase, no symbols or spaces)"
-    Type: String
-    Default: ecodistribucion
-  pProyecto:
-    Description: "Name of the project owning the pipeline (all lowercase, no symbols or spaces)"
-    Type: String
-    Default: misupply
   AWSRegion:
     Type: String
-    Description: AWS Region
-  LIBbucket:
-    Type: String
-    Description: Nombre del bucket S3 para el código
+    Description: Región de AWS
 
 Globals:
   Function:
@@ -41,7 +27,7 @@ Resources:
       Timeout: 30
       Role: !ImportValue LambdaMisupplyRole-Arn
       CodeUri:
-        Bucket: !Ref LIBbucket
+        Bucket: prueba-exampe-josemaria-git
         Key: lambda/stage_misupply/src/
       Environment:
         Variables:
@@ -59,7 +45,7 @@ Resources:
       CompatibleRuntimes:
         - python3.9
       ContentUri:
-        Bucket: !Ref LIBbucket
+        Bucket: test-artifacts-dev-josemaria
         Key: layers/awswrangler-layer-py3-9.zip
       Description: Data Wrangler Layer for Python 3.9
       LayerName: !Sub awswrangler-layer-py3-9-${Stage}
@@ -70,7 +56,7 @@ Resources:
       CompatibleRuntimes:
         - python3.12
       ContentUri:
-        Bucket: !Ref LIBbucket
+        Bucket: test-artifacts-dev-josemaria
         Key: layers/request-py3-12.zip
       Description: Request Layer for Python 3.12
       LayerName: !Sub request-py3-12-${Stage}
