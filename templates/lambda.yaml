@@ -65,6 +65,7 @@ Resources:
       Description: Request Layer for Python 3.12
       LayerName: !Sub request-py3-12-${Stage}
 
+
   LambdaInvokeEventRule:
     Type: AWS::Events::Rule
     Properties:
