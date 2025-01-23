@@ -3,7 +3,7 @@ Transform: AWS::Serverless-2016-10-31
 
 Parameters:
   Stage:
-    Type: "String"
+    Type: String
     Description: Environment name (dev/qa/prod)
     Default: dev
   pTeamName:
@@ -46,3 +46,10 @@ Resources:
       Description: Request Layer for Python 3.12
       LayerName: !Sub request-py3-12-${Stage}
 
+Outputs:
+  DataWranglerLayerArn:
+    Description: ARN of the Data Wrangler Layer
+    Value: !Ref dataWranglerLayer
+  RequestLayerArn:
+    Description: ARN of the Request Layer
+    Value: !Ref requestLayer
