@@ -147,10 +147,6 @@ jobs:
               ParameterKey=AWSRegion,ParameterValue=$REGION \
               ParameterKey=LIBbucket,ParameterValue=$AWS_BUCKET_NAME
 
-
-
-
-
       # Despliegue del stack Athena
       - name: Deploy ATHENA
         id: athena
