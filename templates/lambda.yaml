@@ -25,22 +25,28 @@ Parameters:
     Type: String
     Description: AWS Region
 
+Globals:
+  Function:
+      Runtime: python3.9
+      Handler: lambda_function.lambda_handler
+
 Resources:
-  rLambdaInvokeMisupply:
-    Type: AWS::Serverless::Function
+  rLambdaInvokevent:
+    Type: "AWS::Serverless::Function"
     Properties:
-      FunctionName: !Join ['-', [ "lambda", !Ref pTeamName, !Ref pProyecto, !Ref Stage ]]
-      Description: "Gatillado cada día a las 21:00 UTC por EventBridge"
-      Runtime: python3.9 # Define el runtime
-      Handler: lambda_functions.lambda_handler # Define el handler (archivo.función)
-      MemorySize: 2048
-      Timeout: 900
-      Role: !ImportValue LambdaMisupplyRole-Arn
+      CodeUri: ./lambda/stage_misupply/src
+      FunctionName: !Join ['-', ["sdlf", !Ref pTeamName, !Ref pPipeline, "route"]]
+      Description: "Gatillado de sm eventuales"
+      MemorySize: 256
+      Timeout: 500
+      Layers:
+        - "arn:aws:lambda:us-east-1:336392948345:layer:AWSDataWrangler-Python39:9"
+      Runtime: python3.9  
+      Role: !GetAtt Role.Arn
       Environment:
         Variables:
           ENVIRONMENT: !Ref Stage
           REGION: !Ref AWSRegion
-      CodeUri: s3://prueba-exampe-josemaria-git/lambda/optimizador/src/
       Events:
         CronTrigger:
           Type: Schedule
