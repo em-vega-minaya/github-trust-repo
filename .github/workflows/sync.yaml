@@ -98,6 +98,7 @@ jobs:
             --template-file .aws-sam/build/template.yaml \
             --stack-name da-josemaria-lambda \
             --capabilities CAPABILITY_NAMED_IAM \
+            --s3-bucket $AWS_BUCKET_NAME \
             --region $REGION \
             --parameter-overrides \
               ParameterKey=Stage,ParameterValue=$ENVIRONMENT \
