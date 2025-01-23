@@ -1,5 +1,4 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Transform: AWS::Serverless-2016-10-31
 
 Parameters:
   Stage:
@@ -22,29 +21,75 @@ Parameters:
     Type: String
     Description: AWS Region
 
-Globals:
-  Function:
-    Runtime: python3.9
-    Handler: lambda_function.lambda_handler
-
 Resources:
-  MyLambdaFunction:
-    Type: AWS::Serverless::Function
+ MyLambdaFunction:
+  Type: AWS::Lambda::Function
+  Properties:
+    FunctionName: !Sub "function-${Stage}"
+    Description: "Lambda function desplegada dinámicamente"
+    MemorySize: 256
+    Timeout: 30
+    Code:
+      S3Bucket: prueba-exampe-josemaria-git
+      S3Key: lambda/stage_misupply/src/lambda_function.py
+    Handler: lambda_function.lambda_handler
+    Runtime: python3.9
+    Role: !ImportValue LambdaMisupplyRole-Arn
+    Environment:
+      Variables:
+        ENVIRONMENT: !Ref Stage
+        REGION: !Ref AWSRegion
+    Layers:
+      - !Ref DataWranglerLayer
+      - !Ref RequestLayer
+      
+  DataWranglerLayer:
+    Type: AWS::Lambda::LayerVersion
     Properties:
-      FunctionName: !Sub "function-${Stage}"
-      Description: "Lambda function desplegada dinámicamente"
-      MemorySize: 256
-      Timeout: 30
-      CodeUri: ./lambda/stage_misupply/src/
-      Role: !ImportValue LambdaMisupplyRole-Arn
-      Environment:
-        Variables:
-          ENVIRONMENT: !Ref Stage
-          REGION: !Ref AWSRegion
-      Events:
-        CronTrigger:
-          Type: Schedule
-          Properties:
-            Schedule: "cron(0 21 * * ? *)" # Se ejecuta todos los días a las 21:00 UTC
+      CompatibleRuntimes:
+        - python3.9
+      Content:
+        S3Bucket: !ImportValue da-ArtifactsBucketlibName
+        S3Key: layers/awswrangler-layer-py3-9.zip
+      Description: Data Wrangler Layer for Python 3.9
+      LayerName: !Sub awswrangler-layer-py3-9-${Stage}
 
+  RequestLayer:
+    Type: AWS::Lambda::LayerVersion
+    Properties:
+      CompatibleRuntimes:
+        - python3.12
+      Content:
+        S3Bucket: !ImportValue da-ArtifactsBucketlibName
+        S3Key: layers/request-layer-py3-12.zip
+      Description: Request Layer for Python 3.12
+      LayerName: !Sub request-py3-12-${Stage}
 
+  LambdaInvokeEventRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Name: !Sub "event-rule-${Stage}"
+      ScheduleExpression: "cron(0 21 * * ? *)" # Se ejecuta todos los días a las 21:00 UTC
+      State: ENABLED
+      Targets:
+        - Id: LambdaTarget
+          Arn: !GetAtt MyLambdaFunction.Arn
+
+  PermissionForEventRule:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt MyLambdaFunction.Arn
+      Action: lambda:InvokeFunction
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt LambdaInvokeEventRule.Arn
+
+Outputs:
+  LambdaFunctionArn:
+    Description: ARN of the Lambda function
+    Value: !GetAtt MyLambdaFunction.Arn
+  DataWranglerLayerArn:
+    Description: ARN of the Data Wrangler Layer
+    Value: !Ref DataWranglerLayer
+  RequestLayerArn:
+    Description: ARN of the Request Layer
+    Value: !Ref RequestLayer
