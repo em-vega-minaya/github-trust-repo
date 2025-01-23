@@ -3,7 +3,7 @@ name: Sync File to S3
 on:
   push:
     branches:
-      - develop # Solo se ejecutará cuando haya cambios en la rama main
+      - develop # Solo se ejecutará cuando haya cambios en la rama develop
 
 permissions:
   id-token: write
@@ -17,8 +17,8 @@ jobs:
       REGION: "us-east-1"
       ARTIFACTS_S3: "test-artifacts-dev-josemaria"
       AWS_ACCOUNT_ID: "345345345345"
-      AWS_ACCOUNT_OPTIMIZADOR: "5345345345"  
-      ENVIRONMENT: "dev" 
+      AWS_ACCOUNT_OPTIMIZADOR: "5345345345"
+      ENVIRONMENT: "dev"
     steps:
       - name: Set timestamp
         run: |
@@ -32,55 +32,49 @@ jobs:
             echo "ENVIRONMENT=${{ github.base_ref }}" >> $GITHUB_ENV
           fi
 
-    
       - name: Checkout Repo
         uses: actions/checkout@v2
-    
-        # 2. Configura las credenciales de AWS
-      - name: connect to AWS
+
+      # Configura las credenciales de AWS
+      - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           role-session-name: awssyncsession
           role-to-assume: ${{ secrets.AWS_IAM_ROLE }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+      # Sincroniza archivos locales con S3
+      - name: Sync Folder to S3
+        run: |
+          aws s3 sync ./stabe_lib s3://$AWS_BUCKET_NAME/
+          echo "Folder synchronized to S3 bucket: $AWS_BUCKET_NAME"
+
+      # Despliegue del stack S3
       - name: Deploy S3
         id: s3
-        shell: bash
-        env:
-          S3_STACK_NAME: da-josemaria-s3
         run: |
           aws cloudformation deploy --template-file templates/s3.yaml \
             --region $REGION \
-            --stack-name $S3_STACK_NAME \
+            --stack-name da-josemaria-s3 \
             --capabilities CAPABILITY_NAMED_IAM \
             --no-fail-on-empty-changeset \
             --parameter-overrides Stage=$ENVIRONMENT \
               ArtifactsBucket=$ARTIFACTS_S3 AWSRegion=$REGION \
               AWSAccountId=$AWS_ACCOUNT_ID
-          aws cloudformation describe-stack-events --stack-name $S3_STACK_NAME --max-items 5
 
-      - name: Sync Folder to S3
-        id: sync-folder
-        run: |
-          aws s3 sync ./stabe_lib s3://$AWS_BUCKET_NAME/
-          echo "Folder synchronized to S3 bucket: $AWS_BUCKET_NAME"
-      
+      # Despliegue del stack IAM
       - name: Deploy IAM
         id: iam
-        shell: bash
-        env:
-          STACK_NAME: da-josemaria-iam
         run: |
           aws cloudformation deploy --template-file templates/iam.yaml \
             --region $REGION \
-            --stack-name $STACK_NAME \
+            --stack-name da-josemaria-iam \
             --capabilities CAPABILITY_NAMED_IAM \
             --no-fail-on-empty-changeset \
             --parameter-overrides Stage=$ENVIRONMENT \
               AWSRegion=$REGION AWSAccountId=$AWS_ACCOUNT_ID
-          aws cloudformation describe-stack-events --stack-name $STACK_NAME --max-items 5
 
+      # Subida de capas a S3
       - name: Upload layers to S3
         run: |
           aws s3 cp ./layers/awswrangler-layer-py3-9.zip s3://$ARTIFACTS_S3/layers/
@@ -91,20 +85,18 @@ jobs:
 
           echo "awswranglerlayerpy39MD5=$awswrangler_layer_py3_9_md5" >> $GITHUB_ENV
           echo "requestlayerpy312MD5=$request_layer_py3_12_md5" >> $GITHUB_ENV
-          
+
+      # Despliegue del stack Lambda con SAM
       - name: Deploy Lambda
         id: lambda
-        shell: bash
-        env:
-          STACK_NAME: da-josemaria-lambda
         run: |
-          # Desplegar el stack con AWS CLI
-          aws cloudformation deploy \
-            --template-file templates/lambda.yaml \
-            --region $REGION \
-            --stack-name $STACK_NAME \
+          sam build --template templates/lambda.yaml --use-container
+          sam deploy \
+            --template-file .aws-sam/build/template.yaml \
+            --stack-name da-josemaria-lambda \
             --capabilities CAPABILITY_NAMED_IAM \
             --no-fail-on-empty-changeset \
+            --region $REGION \
             --parameter-overrides \
               Stage=$ENVIRONMENT \
               deploymentDate=$TIMESTAMP \
@@ -113,26 +105,15 @@ jobs:
               AWSRegion=$REGION \
               LIBbucket=$AWS_BUCKET_NAME
 
-          # Consultar los eventos más recientes del stack
-          aws cloudformation describe-stack-events \
-            --stack-name $STACK_NAME \
-            --max-items 5 \
-            --output table
-
+      # Despliegue del stack Athena
       - name: Deploy ATHENA
         id: athena
-        shell: bash
         if: contains(github.event.pull_request.title, '-athena') || contains(github.event.pull_request.title, '-all')
-        env:
-          STACK_NAME: da-josemaria-athena
         run: |
           aws cloudformation deploy --template-file templates/athena.yaml \
             --region $REGION \
-            --stack-name $STACK_NAME \
+            --stack-name da-josemaria-athena \
             --capabilities CAPABILITY_NAMED_IAM \
             --no-fail-on-empty-changeset \
             --parameter-overrides Stage=$ENVIRONMENT \
               AWSRegion=$REGION AWSAccountId=$AWS_ACCOUNT_ID
-          aws cloudformation describe-stack-events --stack-name $STACK_NAME --max-items 5
-    
-  
