@@ -1,17 +1,3 @@
-
-Conversación abierta. 1 mensaje leído.
-
-Ir al contenido
-Uso de Correo de Universidad Ricardo Palma con lectores de pantalla
-
-4 de 1.933
-(sin asunto)
-Recibidos
-
-Josemaria Paucar Soto <202312432@urp.edu.pe>
-17:12 (hace 6 horas)
-para mí
-
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 
