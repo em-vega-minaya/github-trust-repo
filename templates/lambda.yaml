@@ -42,7 +42,7 @@ Resources:
       Role: !ImportValue LambdaMisupplyRole-Arn
       CodeUri:
         Bucket: !Ref LIBbucket
-        Key: lambda/stage_misupply/src/lambda_function.zip
+        Key: lambda/stage_misupply/src/
       Environment:
         Variables:
           ENVIRONMENT: !Ref Stage
