@@ -23,6 +23,26 @@ Parameters:
     Description: AWS Region
 
 Resources:
+  MyLambdaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "function-${Stage}"
+      Description: "Función Lambda que utiliza un rol externo"
+      Runtime: python3.9
+      MemorySize: 256
+      Timeout: 30
+      Role: !ImportValue LambdaMisupplyRole-Arn
+      CodeUri:
+        Bucket: prueba-exampe-josemaria-git/lambda/stage_misupply/src/
+      Environment:
+        Variables:
+          ENVIRONMENT: !Ref Stage
+          REGION: !Ref AWSRegion
+      Events:
+        CronTrigger:
+          Type: Schedule
+          Properties:
+            Schedule: "cron(0 21 * * ? *)" # Se ejecuta todos los días a las 21:00 UTC
 
   dataWranglerLayer:
     Type: AWS::Serverless::LayerVersion
