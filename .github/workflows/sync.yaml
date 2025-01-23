@@ -86,22 +86,21 @@ jobs:
           echo "awswranglerlayerpy39MD5=$awswrangler_layer_py3_9_md5" >> $GITHUB_ENV
           echo "requestlayerpy312MD5=$request_layer_py3_12_md5" >> $GITHUB_ENV
 
-      # Despliegue del stack Lambda con SAM
-      - name: Deploy Lambda
-        id: lambda
+       # Construir la plantilla SAM
+      - name: Build Lambda Function
         run: |
-          sam build --template templates/lambda.yaml --use-container
+          sam build --template-file templates/lambda.yaml --use-container
+
+      # Desplegar la plantilla SAM
+      - name: Deploy Lambda Function
+        run: |
           sam deploy \
             --template-file .aws-sam/build/template.yaml \
             --stack-name da-josemaria-lambda \
             --capabilities CAPABILITY_NAMED_IAM \
-            --no-fail-on-empty-changeset \
             --region $REGION \
             --parameter-overrides \
               Stage=$ENVIRONMENT \
-              deploymentDate=$TIMESTAMP \
-              awswranglerlayerpy39MD5=$awswranglerlayerpy39MD5 \
-              requestlayerpy312MD5=$requestlayerpy312MD5 \
               AWSRegion=$REGION \
               LIBbucket=$AWS_BUCKET_NAME
 

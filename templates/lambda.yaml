@@ -22,17 +22,21 @@ Parameters:
     Type: String
     Description: AWS Region
 
+Globals:
+  Function:
+    Runtime: python3.9
+    Handler: lambda_function.lambda_handler
+
 Resources:
   MyLambdaFunction:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: !Sub "function-${Stage}"
-      Description: "Función Lambda que utiliza un rol externo"
-      Runtime: python3.9
+      Description: "Lambda function desplegada dinámicamente"
       MemorySize: 256
       Timeout: 30
+      CodeUri: ./lambda/stage_misupply/src/
       Role: !ImportValue LambdaMisupplyRole-Arn
-      CodeUri:  ./lambda/stage_misupply/src/
       Environment:
         Variables:
           ENVIRONMENT: !Ref Stage
