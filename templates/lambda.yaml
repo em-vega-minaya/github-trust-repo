@@ -42,7 +42,7 @@ Resources:
         - python3.12
       ContentUri:
         Bucket: !ImportValue da-ArtifactsBucketlibName
-        Key: layers/request-py3-12.zip
+        Key: layers/request-layer-py3-12.zip
       Description: Request Layer for Python 3.12
       LayerName: !Sub request-py3-12-${Stage}
 
