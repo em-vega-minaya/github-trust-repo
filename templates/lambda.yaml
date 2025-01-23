@@ -71,9 +71,9 @@ Resources:
 
 
 Outputs: 
-  LambdaApolloServer:
-    Description: LambdaApolloServer Arn
-    Value: !GetAtt LambdaApolloServer.Arn
+  myLambdaFunction:
+    Description: myLambdaFunction Arn
+    Value: !GetAtt myLambdaFunction.Arn
     Export:
-      Name: AK-LambdaApolloServerArn
+      Name: DA-myLambdaFunctionArn
 
