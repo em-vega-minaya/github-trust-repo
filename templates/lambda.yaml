@@ -39,24 +39,4 @@ Resources:
           Properties:
             Schedule: "cron(0 21 * * ? *)" # Se ejecuta todos los días a las 21:00 UTC
 
-  dataWranglerLayer:
-    Type: AWS::Serverless::LayerVersion
-    Properties:
-      CompatibleRuntimes:
-        - python3.9
-      ContentUri:
-        Bucket: test-artifacts-dev-josemaria
-        Key: layers/awswrangler-layer-py3-9.zip
-      Description: Data Wrangler Layer for Python 3.9
-      LayerName: !Sub awswrangler-layer-py3-9-${Stage}
 
-  requestLayer:
-    Type: AWS::Serverless::LayerVersion
-    Properties:
-      CompatibleRuntimes:
-        - python3.12
-      ContentUri:
-        Bucket: test-artifacts-dev-josemaria
-        Key: layers/request-py3-12.zip
-      Description: Request Layer for Python 3.12
-      LayerName: !Sub request-py3-12-${Stage}
