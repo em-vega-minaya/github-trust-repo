@@ -5,10 +5,7 @@ Parameters:
   Stage:
     Type: "String"
     Description: Environment name (dev/qa/prod)
-    AllowedValues:
-      - dev
-      - qa
-      - prod
+    Default: dev
   pTeamName:
     Description: "Name of the team owning the pipeline (all lowercase, no symbols or spaces)"
     Type: String
