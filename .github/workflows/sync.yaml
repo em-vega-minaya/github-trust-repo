@@ -91,6 +91,9 @@ jobs:
         shell: bash
         env:
           STACK_NAME: da-josemaria-lambda
+          REGION: us-east-1
+          ENVIRONMENT: dev
+          AWS_BUCKET_NAME: prueba-exampe-josemaria-git
         run: |
           # Crear una carpeta temporal para empaquetar
           TEMP_DIR=$(mktemp -d)
@@ -98,31 +101,40 @@ jobs:
 
           # Crear paquetes individuales por subdirectorio dentro de stage_lib
           for dir in $(find $TEMP_DIR -type d); do
-            RELATIVE_PATH=${dir#$TEMP_DIR/}
-            ZIP_FILE=${RELATIVE_PATH}.zip
-            ZIP_DEST="lambda/${RELATIVE_PATH}/src"
-            
-            # Evitar errores en el directorio raíz vacío
-            if [ "$RELATIVE_PATH" != "$TEMP_DIR" ]; then
+            RELATIVE_PATH=${dir#$TEMP_DIR/} # Ruta relativa al directorio raíz temporal
+            ZIP_FILE=$(echo $RELATIVE_PATH | tr '/' '_').zip # Reemplazar '/' con '_' para nombrar el archivo ZIP
+            ZIP_DEST="lambda/${RELATIVE_PATH}/src" # Ruta de destino en S3
+
+            # Verificar que el directorio no esté vacío antes de empaquetar
+            if [ "$RELATIVE_PATH" != "$TEMP_DIR" ] && [ "$(ls -A $dir)" ]; then
               echo "Empaquetando $RELATIVE_PATH en $ZIP_FILE..."
-              zip -r $ZIP_FILE $dir/*
-              
+              zip -r $ZIP_FILE $dir > /dev/null
+
               # Subir a S3 dinámicamente
               echo "Subiendo $ZIP_FILE a s3://$AWS_BUCKET_NAME/$ZIP_DEST/$ZIP_FILE..."
-              aws s3 cp $ZIP_FILE s3://$AWS_BUCKET_NAME/$ZIP_DEST/
+              aws s3 cp $ZIP_FILE s3://$AWS_BUCKET_NAME/$ZIP_DEST/$ZIP_FILE
+            else
+              echo "Saltando $RELATIVE_PATH porque está vacío."
             fi
           done
 
           # Limpiar el directorio temporal
           rm -rf $TEMP_DIR
 
-          # Desplegar la plantilla SAM
+          # Construir el proyecto SAM
+          echo "Construyendo el proyecto SAM..."
+          sam build --template-file templates/lambda.yaml --use-container
+
+          # Empaquetar la plantilla SAM
+          echo "Empaquetando la plantilla SAM..."
           sam package \
-            --template-file templates/lambda.yaml \
+            --template-file .aws-sam/build/template.yaml \
             --s3-bucket $AWS_BUCKET_NAME \
             --s3-prefix lambda \
             --output-template-file packaged-template.yaml
 
+          # Desplegar el stack con SAM
+          echo "Desplegando el stack Lambda con SAM..."
           sam deploy \
             --template-file packaged-template.yaml \
             --stack-name $STACK_NAME \
