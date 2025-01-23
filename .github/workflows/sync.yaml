@@ -95,21 +95,21 @@ jobs:
           ENVIRONMENT: dev
           AWS_BUCKET_NAME: prueba-exampe-josemaria-git
         run: |
-          # Crear paquetes individuales por subdirectorio dentro de stage_lib
-          for dir in $(find ./stage_lib -mindepth 1 -maxdepth 1 -type d); do
-            # Nombre del subdirectorio (sin el prefijo ./stage_lib/)
-            SUBDIR_NAME=$(basename $dir)
+          # Recorrer todos los subdirectorios dentro de stage_lib
+          for src_dir in $(find ./stage_lib -type d -name src); do
+            # Obtener el nombre del subdirectorio padre
+            PARENT_DIR=$(basename $(dirname $src_dir))
             
-            # Ruta para el archivo ZIP
-            ZIP_FILE="${SUBDIR_NAME}.zip"
+            # Crear el nombre del archivo ZIP
+            ZIP_FILE="${PARENT_DIR}.zip"
             
             # Ruta de destino en S3
-            S3_DEST="lambda/${SUBDIR_NAME}/src/${ZIP_FILE}"
+            S3_DEST="lambda/${PARENT_DIR}/src/${ZIP_FILE}"
             
-            # Verificar que el subdirectorio no esté vacío
-            if [ "$(ls -A $dir)" ]; then
-              echo "Empaquetando $SUBDIR_NAME en $ZIP_FILE..."
-              zip -r $ZIP_FILE $dir > /dev/null
+            # Verificar que el subdirectorio src no esté vacío
+            if [ "$(ls -A $src_dir)" ]; then
+              echo "Empaquetando ${PARENT_DIR}/src en ${ZIP_FILE}..."
+              zip -r $ZIP_FILE $src_dir > /dev/null
 
               # Subir el archivo ZIP a S3
               echo "Subiendo $ZIP_FILE a s3://$AWS_BUCKET_NAME/$S3_DEST..."
@@ -119,7 +119,7 @@ jobs:
               echo "Eliminando el archivo ZIP local $ZIP_FILE..."
               rm $ZIP_FILE
             else
-              echo "El subdirectorio $SUBDIR_NAME está vacío. Saltando."
+              echo "El subdirectorio ${PARENT_DIR}/src está vacío. Saltando."
             fi
           done
 
@@ -146,6 +146,7 @@ jobs:
               ParameterKey=Stage,ParameterValue=$ENVIRONMENT \
               ParameterKey=AWSRegion,ParameterValue=$REGION \
               ParameterKey=LIBbucket,ParameterValue=$AWS_BUCKET_NAME
+
 
       # Despliegue del stack Athena
       - name: Deploy ATHENA
