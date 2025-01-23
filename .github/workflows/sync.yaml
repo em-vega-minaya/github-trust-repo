@@ -98,18 +98,26 @@ jobs:
         env:
           STACK_NAME: da-josemaria-lambda
         run: |
-          aws cloudformation deploy --template-file templates/lambda.yaml \
+          # Desplegar el stack con AWS CLI
+          aws cloudformation deploy \
+            --template-file templates/lambda.yaml \
             --region $REGION \
             --stack-name $STACK_NAME \
             --capabilities CAPABILITY_NAMED_IAM \
             --no-fail-on-empty-changeset \
-            --s3-bucket prueba-exampe-josemaria-git \
-            --parameter-overrides Stage=$ENVIRONMENT \
+            --parameter-overrides \
+              Stage=$ENVIRONMENT \
               deploymentDate=$TIMESTAMP \
               awswranglerlayerpy39MD5=$awswranglerlayerpy39MD5 \
               requestlayerpy312MD5=$requestlayerpy312MD5 \
-              AWSRegion=$REGION LIBbucket=$$AWS_BUCKET_NAME
-          aws cloudformation describe-stack-events --stack-name $STACK_NAME --max-items 5 --output table
+              AWSRegion=$REGION \
+              LIBbucket=$AWS_BUCKET_NAME
+
+          # Consultar los eventos más recientes del stack
+          aws cloudformation describe-stack-events \
+            --stack-name $STACK_NAME \
+            --max-items 5 \
+            --output table
 
       - name: Deploy ATHENA
         id: athena
