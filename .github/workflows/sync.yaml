@@ -100,9 +100,10 @@ jobs:
             --capabilities CAPABILITY_NAMED_IAM \
             --region $REGION \
             --parameter-overrides \
-              Stage=$ENVIRONMENT \
-              AWSRegion=$REGION \
-              LIBbucket=$AWS_BUCKET_NAME
+              ParameterKey=Stage,ParameterValue=$ENVIRONMENT \
+              ParameterKey=AWSRegion,ParameterValue=$REGION \
+              ParameterKey=LIBbucket,ParameterValue=$AWS_BUCKET_NAME
+
 
       # Despliegue del stack Athena
       - name: Deploy ATHENA
