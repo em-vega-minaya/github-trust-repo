@@ -31,20 +31,18 @@ Globals:
     Handler: lambda_function.lambda_handler
 
 Resources:
-  rLambdaInvokevent:
-    Type: "AWS::Serverless::Function"
+  MyLambdaFunction:
+    Type: AWS::Serverless::Function
     Properties:
+      FunctionName: !Sub "function-${Stage}"
+      Description: "Función Lambda que utiliza un rol externo"
+      Runtime: python3.9
+      MemorySize: 256
+      Timeout: 30
+      Role: !ImportValue LambdaMisupplyRole-Arn
       CodeUri:
         Bucket: !Ref LIBbucket
-        Key: lambda/stage_misupply/src/lambda_function.zip
-      FunctionName: !Join ['-', ["sdlf", !Ref pTeamName, !Ref pPipeline, "route"]]
-      Description: "Gatillado de sm eventuales"
-      MemorySize: 256
-      Timeout: 500
-      Layers:
-        - !Ref dataWranglerLayer
-        - !Ref requestLayer
-      Role: !GetAtt LambdaMisupplyRole-Arn
+        Key: lambda/code/lambda_function.zip
       Environment:
         Variables:
           ENVIRONMENT: !Ref Stage
@@ -53,7 +51,7 @@ Resources:
         CronTrigger:
           Type: Schedule
           Properties:
-            Schedule: "cron(0 21 ? * * *)"
+            Schedule: "cron(0 21 * * ? *)" # Se ejecuta todos los días a las 21:00 UTC
 
   dataWranglerLayer:
     Type: AWS::Serverless::LayerVersion
