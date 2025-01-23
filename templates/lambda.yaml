@@ -31,7 +31,8 @@ Resources:
     Properties:
       FunctionName: !Join ['-', [ "lambda", !Ref pTeamName, !Ref pProyecto, !Ref Stage ]]
       Description: "Gatillado cada día a las 21:00 UTC por EventBridge"
-      Runtime: python3.9
+      Runtime: python3.9 # Define el runtime
+      Handler: lambda_functions.lambda_handler # Define el handler (archivo.función)
       MemorySize: 2048
       Timeout: 900
       Role: !ImportValue LambdaMisupplyRole-Arn
@@ -39,7 +40,7 @@ Resources:
         Variables:
           ENVIRONMENT: !Ref Stage
           REGION: !Ref AWSRegion
-      CodeUri: s3://prueba-exampe-josemaria-git/lambda/optimizador/src/lambda_functions.py
+      CodeUri: s3://prueba-exampe-josemaria-git/lambda/optimizador/src/
       Events:
         CronTrigger:
           Type: Schedule
@@ -48,6 +49,7 @@ Resources:
       Layers:
         - !Ref dataWranglerLayer
         - !Ref requestLayer
+
 
   dataWranglerLayer:
     Type: AWS::Serverless::LayerVersion
