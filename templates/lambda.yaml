@@ -23,7 +23,7 @@ Parameters:
     Description: AWS Region
   LIBbucket:
     Type: String
-    Description: S3 Bucket for storing Lambda code and layers
+    Description: Nombre del bucket S3 para el código
 
 Globals:
   Function:
@@ -34,7 +34,9 @@ Resources:
   rLambdaInvokevent:
     Type: "AWS::Serverless::Function"
     Properties:
-      CodeUri: !Sub "s3://${LIBbucket}/lambda/stage_misupply/src/"
+      CodeUri:
+        Bucket: !Ref LIBbucket
+        Key: lambda/stage_misupply/src/lambda_function.zip
       FunctionName: !Join ['-', ["sdlf", !Ref pTeamName, !Ref pPipeline, "route"]]
       Description: "Gatillado de sm eventuales"
       MemorySize: 256
