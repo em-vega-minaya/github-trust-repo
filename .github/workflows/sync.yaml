@@ -95,17 +95,29 @@ jobs:
           ENVIRONMENT: dev
           AWS_BUCKET_NAME: prueba-exampe-josemaria-git
         run: |
-          # Crear un archivo ZIP para stage_lib completo
-          echo "Empaquetando todos los subdirectorios de stage_lib en un archivo ZIP..."
-          zip -r lambda_package.zip ./stage_lib/*
+          # Crear paquetes individuales por subdirectorio dentro de stage_lib
+          for dir in $(find ./stage_lib -mindepth 1 -maxdepth 1 -type d); do
+            # Nombre del subdirectorio (sin el prefijo ./stage_lib/)
+            SUBDIR_NAME=$(basename $dir)
+            
+            # Ruta para el archivo ZIP
+            ZIP_FILE="${SUBDIR_NAME}.zip"
+            
+            # Ruta de destino en S3
+            S3_DEST="lambda/${SUBDIR_NAME}/src/${ZIP_FILE}"
+            
+            # Crear el archivo ZIP para el subdirectorio
+            echo "Empaquetando $SUBDIR_NAME en $ZIP_FILE..."
+            zip -r $ZIP_FILE $dir > /dev/null
 
-          # Subir el archivo ZIP a S3 en la ruta especificada
-          echo "Subiendo el archivo ZIP empaquetado a S3..."
-          aws s3 cp lambda_package.zip s3://$AWS_BUCKET_NAME/lambda/stage_lib/
-
-          # Limpiar el ZIP local
-          echo "Limpiando el archivo ZIP local..."
-          rm lambda_package.zip
+            # Subir el archivo ZIP a la ubicación correspondiente en S3
+            echo "Subiendo $ZIP_FILE a s3://$AWS_BUCKET_NAME/$S3_DEST..."
+            aws s3 cp $ZIP_FILE s3://$AWS_BUCKET_NAME/$S3_DEST
+            
+            # Limpiar el archivo ZIP local
+            echo "Eliminando el archivo ZIP local $ZIP_FILE..."
+            rm $ZIP_FILE
+          done
 
           # Construir el proyecto SAM
           echo "Construyendo el proyecto SAM..."
@@ -130,6 +142,7 @@ jobs:
               ParameterKey=Stage,ParameterValue=$ENVIRONMENT \
               ParameterKey=AWSRegion,ParameterValue=$REGION \
               ParameterKey=LIBbucket,ParameterValue=$AWS_BUCKET_NAME
+
 
 
 
