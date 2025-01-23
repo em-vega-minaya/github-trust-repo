@@ -21,55 +21,54 @@ Parameters:
     Type: String
     Description: AWS Region
 
+Globals:
+  Function:
+      Runtime: python3.9
+      Handler: lambda_function.lambda_handler
+
 Resources:
- MyLambdaFunction:
-  Type: AWS::Lambda::Function
-  Properties:
-    FunctionName: !Sub "function-${Stage}"
-    Description: "Lambda function desplegada dinámicamente"
-    MemorySize: 256
-    Timeout: 30
-    Code:
-      S3Bucket: prueba-exampe-josemaria-git
-      S3Key: lambda/stage_misupply/src/lambda_function.py
-    Handler: lambda_function.lambda_handler
-    Runtime: python3.9
-    Role: !ImportValue LambdaMisupplyRole-Arn
-    Environment:
-      Variables:
-        ENVIRONMENT: !Ref Stage
-        REGION: !Ref AWSRegion
-    Layers:
-      - !Ref DataWranglerLayer
-      - !Ref RequestLayer
+  myLambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Sub "function-${Stage}"
+      Description: "Lambda function desplegada dinámicamente"
+      MemorySize: 256
+      Timeout: 30
+      Code:
+          ZipFile: |
+            def lambda_handler(event, context):
+                return {
+                    'statusCode': 200,
+                    'body': 'Hola Mundo'
+                }
+      Role: !ImportValue LambdaMisupplyRole-Arn
+      Environment:
+        Variables:
+          ENVIRONMENT: !Ref Stage
+          REGION: !Ref AWSRegion
+      Layers:
+        - !Ref dataWranglerLayer
+        - !Ref requestLayer
       
-
-
-  LambdaInvokeEventRule:
-    Type: AWS::Events::Rule
+  dataWranglerLayer:
+    Type: AWS::Serverless::LayerVersion
     Properties:
-      Name: !Sub "event-rule-${Stage}"
-      ScheduleExpression: "cron(0 21 * * ? *)" # Se ejecuta todos los días a las 21:00 UTC
-      State: ENABLED
-      Targets:
-        - Id: LambdaTarget
-          Arn: !GetAtt MyLambdaFunction.Arn
+      CompatibleRuntimes:
+        - python3.9
+      ContentUri:
+        Bucket: !ImportValue da-ArtifactsBucketlibName
+        Key: layers/awswrangler-layer-py3-9.zip
+      Description: Data Wrangler Layer for Python 3.9
+      LayerName: !Sub awswrangler-layer-py3-9-${Stage}
 
-  PermissionForEventRule:
-    Type: AWS::Lambda::Permission
+  requestLayer:
+    Type: AWS::Serverless::LayerVersion
     Properties:
-      FunctionName: !GetAtt MyLambdaFunction.Arn
-      Action: lambda:InvokeFunction
-      Principal: events.amazonaws.com
-      SourceArn: !GetAtt LambdaInvokeEventRule.Arn
+      CompatibleRuntimes:
+        - python3.12
+      ContentUri:
+        Bucket: !ImportValue da-ArtifactsBucketlibName
+        Key: layers/request-py3-12.zip
+      Description: Request Layer for Python 3.12
+      LayerName: !Sub request-py3-12-${Stage}
 
-Outputs:
-  LambdaFunctionArn:
-    Description: ARN of the Lambda function
-    Value: !GetAtt MyLambdaFunction.Arn
-  DataWranglerLayerArn:
-    Description: ARN of the Data Wrangler Layer
-    Value: !Ref DataWranglerLayer
-  RequestLayerArn:
-    Description: ARN of the Request Layer
-    Value: !Ref RequestLayer
