@@ -47,10 +47,4 @@ Resources:
           Properties:
             Schedule: "cron(0 21 * * ? *)" # Se ejecuta todos los días a las 21:00 UTC
 
-Outputs:
-  DataWranglerLayerArn:
-    Description: ARN of the Data Wrangler Layer
-    Value: !Ref dataWranglerLayer
-  RequestLayerArn:
-    Description: ARN of the Request Layer
-    Value: !Ref requestLayer
+
