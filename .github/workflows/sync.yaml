@@ -70,7 +70,12 @@ jobs:
           role-session-name: awssyncsession
           role-to-assume: ${{ secrets.AWS_IAM_ROLE }}
           aws-region: ${{ secrets.AWS_REGION }}
-
+      
+      - name: Debug: Verify current directory and files
+        run: |
+          echo "Current directory: $(pwd)"
+          ls -l
+          
       - name: Deploy S3
         id: s3
         shell: bash
