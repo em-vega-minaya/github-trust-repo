@@ -66,8 +66,7 @@ jobs:
       - name: Process tags.json
         id: process-tags
         run: |
-          TAGS=$(jq -c 'map(to_entries[] | {Key: .key, Value: .value})' tags.json)
-
+          TAGS=$(jq -r 'reduce .[] as $item ({}; . + $item)' tags.json)
           # Validar que los tags no estén vacíos
           if [ -z "$TAGS" ]; then
             echo "Error: No se generaron tags válidos."
