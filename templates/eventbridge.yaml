@@ -49,7 +49,7 @@ Resources:
       Description: "Regla que captura eventos de creación de objetos en S3 y activa una función Lambda."
       EventPattern:
         source:
-          - "arn:aws:s3:::koa-prueba-345345345345"
+          - "aws.s3"
         detail-type:
           - "AWS API Call via CloudTrail"
         detail:
@@ -58,10 +58,14 @@ Resources:
           eventName:
             - "PutObject"
             - "CompleteMultipartUpload"
+          requestParameters:
+            bucketName:
+              - "koa-prueba-345345345345"
       State: ENABLED
       Targets:
         - Id: LambdaTarget
           Arn: arn:aws:lambda:us-east-1:039612881651:function:lambda-example-Josemaria-api_Misupply
+
 
 
   LambdaInvokePermission:
