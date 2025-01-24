@@ -72,7 +72,7 @@ Resources:
         - !Ref dataWranglerLayer
         - !Ref requestLayer
       Tags:
-        !Sub "${Tags}"
+        !Sub ${Tags}
 
   dataWranglerLayer:
     Type: AWS::Lambda::LayerVersion

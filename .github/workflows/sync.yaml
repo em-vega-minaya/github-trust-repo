@@ -67,7 +67,7 @@ jobs:
         id: process-tags
         run: |
           TAGS=$(jq -c 'to_entries | map({Key: .key, Value: .value})' tags.json)
-          echo "TAGS=$TAGS" >> $GITHUB_ENV
+          echo "::set-output name=tags::$TAGS"
 
         # 2. Configura las credenciales de AWS
       - name: connect to AWS
@@ -195,7 +195,7 @@ jobs:
               awswranglerlayerpy39MD5=$awswranglerlayerpy39MD5 \
               requestlayerpy312MD5=$requestlayerpy312MD5 \
               AWSRegion=$REGION LIBbucket=$$AWS_BUCKET_NAME
-              Tags="$TAGS"
+              Tags='${{ steps.process-tags.outputs.tags }}'
           aws cloudformation describe-stack-events --stack-name $STACK_NAME --max-items 5 --output table
       
       
