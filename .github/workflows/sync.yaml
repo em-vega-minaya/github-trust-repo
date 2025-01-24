@@ -69,6 +69,20 @@ jobs:
           TAGS=$(jq -c 'to_entries | map({Key: .key, Value: .value})' tags.json)
           echo "$TAGS"
 
+      - name: Process tags.jsonsss
+        id: process-tags
+        run: |
+          TAGS=$(jq -c 'map(to_entries[] | {Key: .key, Value: .value})' tags.json)
+
+          # Validar que los tags no estén vacíos
+          if [ -z "$TAGS" ]; then
+            echo "Error: No se generaron tags válidos."
+            exit 1
+          fi
+
+          echo "::set-output name=tags::$TAGS"
+
+
         # 2. Configura las credenciales de AWS
       - name: connect to AWS
         uses: aws-actions/configure-aws-credentials@v1
