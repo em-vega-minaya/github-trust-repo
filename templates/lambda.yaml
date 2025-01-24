@@ -100,7 +100,15 @@ Resources:
         - !Ref dataWranglerLayer
         - !Ref requestLayer
       Tags:
-        - !Ref pTag
+        # Convertimos la lista LambdaTags en objetos válidos para Tags
+        - Fn::If:
+            - IsLambdaTagsSet
+            - !Split
+              - ","
+              - !Join
+                - ","
+                - !Ref pTag
+            - !Ref "AWS::NoValue"
   
   dataWranglerLayer:
     Type: AWS::Lambda::LayerVersion
@@ -124,6 +132,8 @@ Resources:
       Description: Request Layer for Python 3.12
       LayerName: !Sub request-py3-12-${Stage}
 
+Conditions:
+  IsLambdaTagsSet: !Not [ !Equals [ !Ref pTag, ""] ]
 
 Outputs: 
   myLambdaFunction:
