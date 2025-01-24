@@ -4,33 +4,39 @@ Description: template para crear roles y políticas IAM
 Parameters:
   Stage:
     Type: String
-    Description: Ambiente (dev, qa, prod)
+    Description: Environment name (dev/qa/prod)
     Default: dev
+  pBranchName:
+    Description: "Branch Name(all lowercase, no symbols or spaces)"
+    Type: String
+  pArtifactsBucket:
+    Description: "Artifact Bucket (all lowercase, no symbols or spaces)"
+    Type: String
+  pAWSRegion:
+    Description: "Aws region (all lowercase, no symbols or spaces)"
+    Type: String
+  pAWSAccountId:
+    Description: "Aws account (all lowercase, no symbols or spaces)"
+    Type: String
+  pAWSAccountOptId:
+    Description: "Aws account optimizador Id(all lowercase, no symbols or spaces)"
+    Type: String
+  pAccountName:
+    Description: "Aws account (all lowercase, no symbols or spaces)"
+    Type: String
   pTeamName:
-    Description: "Name of the team owning the pipeline (all lowercase, no symbols or spaces)"
+    Description: "Aws account (all lowercase, no symbols or spaces)"
     Type: String
-    Default: prueba
-  AWSRegion:
+  pdeploymentDate:
+    Description: "Aws account (all lowercase, no symbols or spaces)"
     Type: String
-    Description: Región de AWS
-  AWSAccountId:
-    Type: String
-    Description: ID de la cuenta de AWS
-  pcuenta:
-    Description: "Name of the count owning the pipeline (all lowercase, no symbols or spaces)"
-    Type: String
-    Default: josemaria
-  pProyecto:
-    Description: "Name of the count owning the pipeline (all lowercase, no symbols or spaces)"
-    Type: String
-    Default: prueba
 
 Resources:
 
   LambdaMisupplyRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Sub "role-${pTeamName}-${pProyecto}-${Stage}"
+      RoleName: !Sub "role-${pTeamName}-${pAccountName}-${Stage}"
       ManagedPolicyArns:
         - "arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole"
         - "arn:aws:iam::aws:policy/AmazonSNSFullAccess"
@@ -51,7 +57,7 @@ Resources:
               - "sts:AssumeRole"
       Path: "/"
       Policies:
-        - PolicyName: !Sub "${pTeamName}-${pcuenta}-access-to-s3-policy"
+        - PolicyName: !Sub "${pTeamName}-${pAccountName}-access-to-s3-policy"
           PolicyDocument:
             Version: "2012-10-17"
             Statement:
@@ -59,7 +65,7 @@ Resources:
                 Effect: Allow
                 Action: s3:*
                 Resource:
-                  - !Sub "arn:aws:s3:::${pTeamName}-${pcuenta}-stage-${Stage}/*"
+                  - !Sub "arn:aws:s3:::${pTeamName}-${pAccountName}-stage-${Stage}/*"
               - Sid: ReadSecretsManager
                 Effect: Allow
                 Action:

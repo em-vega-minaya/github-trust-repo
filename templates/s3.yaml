@@ -4,29 +4,32 @@ Description: Template para crear un único bucket S3 con subdirectorios específ
 Parameters:
   Stage:
     Type: String
-    Description: Ambiente (dev, qa, prod)
+    Description: Environment name (dev/qa/prod)
     Default: dev
+  pBranchName:
+    Description: "Branch Name(all lowercase, no symbols or spaces)"
+    Type: String
+  pArtifactsBucket:
+    Description: "Artifact Bucket (all lowercase, no symbols or spaces)"
+    Type: String
+  pAWSRegion:
+    Description: "Aws region (all lowercase, no symbols or spaces)"
+    Type: String
+  pAWSAccountId:
+    Description: "Aws account (all lowercase, no symbols or spaces)"
+    Type: String
+  pAWSAccountOptId:
+    Description: "Aws account optimizador Id(all lowercase, no symbols or spaces)"
+    Type: String
+  pAccountName:
+    Description: "Aws account (all lowercase, no symbols or spaces)"
+    Type: String
   pTeamName:
-    Description: "Name of the team owning the pipeline (all lowercase, no symbols or spaces)"
+    Description: "Aws account (all lowercase, no symbols or spaces)"
     Type: String
-    Default: prueba
-  pcuenta:
-    Description: "Name of the count owning the pipeline (all lowercase, no symbols or spaces)"
+  pdeploymentDate:
+    Description: "Aws account (all lowercase, no symbols or spaces)"
     Type: String
-    Default: josemaria
-  pProyecto:
-    Description: "Name of the count owning the pipeline (all lowercase, no symbols or spaces)"
-    Type: String
-    Default: prueba
-  ArtifactsBucket:
-    Type: String
-    Description: Artifact Name
-  AWSRegion:
-    Type: String
-    Description: Región de AWS
-  AWSAccountId:
-    Type: String
-    Description: ID de la cuenta de AWS
 
 Resources:
   ArtifactsBucketlib:
@@ -34,7 +37,7 @@ Resources:
     DeletionPolicy: Delete
     Properties:
       AccessControl: Private
-      BucketName: !Ref ArtifactsBucket
+      BucketName: !Ref pArtifactsBucket
   
   daEcodistribucionBucket:
     Type: AWS::S3::Bucket
@@ -47,16 +50,46 @@ Resources:
     Type: AWS::S3::Bucket
     DeletionPolicy: Delete
     Properties:
-      BucketName: !Join ['-', ["aws-athena-query-results", !Ref AWSRegion, !Ref AWSAccountId]]
+      BucketName: !Join ['-', ["aws-athena-query-results", !Ref pAWSRegion, !Ref pAWSAccountId]]
       AccessControl: Private
 
   daEcodistribucionStagelib:
     Type: AWS::S3::Bucket
     DeletionPolicy: Delete
     Properties:
-      BucketName: !Join ['-', ["koa", !Ref pProyecto, !Ref AWSAccountId]]
+      BucketName: !Join ['-', ["koa", !Ref pAccountName, !Ref pAWSAccountId]]
       AccessControl: Private
 
+  S3Bucket:
+    Type: "AWS::S3::Bucket"
+    Properties:
+      BucketName: !Join ['-', ["proyectodatasync", !Ref pAccountName, !Ref pAWSAccountId]] # Cambia el nombre si es necesario
+
+  S3BucketPolicy:
+    Type: "AWS::S3::BucketPolicy"
+    Properties:
+      Bucket: !Ref S3Bucket
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: "AccessAccountDatalakeObjectDataSync"
+            Effect: "Allow"
+            Principal:
+              AWS: "arn:aws:iam::039612881651:root"
+            Action:
+              - "s3:GetBucketLocation"
+              - "s3:ListBucket"
+              - "s3:ListBucketMultipartUploads"
+              - "s3:AbortMultipartUpload"
+              - "s3:DeleteObject"
+              - "s3:GetObject"
+              - "s3:ListMultipartUploadParts"
+              - "s3:PutObjectTagging"
+              - "s3:GetObjectTagging"
+              - "s3:PutObject"
+            Resource:
+              - "arn:aws:s3:::${S3Bucket}"
+              - "arn:aws:s3:::${S3Bucket}/*"
 Outputs:
   ArtifactsBucketlibName:
     Description: Nombre del bucket creado

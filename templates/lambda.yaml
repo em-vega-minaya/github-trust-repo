@@ -5,24 +5,30 @@ Parameters:
     Type: String
     Description: Environment name (dev/qa/prod)
     Default: dev
+  pBranchName:
+    Description: "Branch Name(all lowercase, no symbols or spaces)"
+    Type: String
+  pArtifactsBucket:
+    Description: "Artifact Bucket (all lowercase, no symbols or spaces)"
+    Type: String
+  pAWSRegion:
+    Description: "Aws region (all lowercase, no symbols or spaces)"
+    Type: String
+  pAWSAccountId:
+    Description: "Aws account (all lowercase, no symbols or spaces)"
+    Type: String
+  pAWSAccountOptId:
+    Description: "Aws account optimizador Id(all lowercase, no symbols or spaces)"
+    Type: String
+  pAccountName:
+    Description: "Aws account (all lowercase, no symbols or spaces)"
+    Type: String
   pTeamName:
-    Description: "Name of the team owning the pipeline (all lowercase, no symbols or spaces)"
+    Description: "Aws account (all lowercase, no symbols or spaces)"
     Type: String
-    Default: da
-  pCuenta:
-    Description: "Name of the account owning the pipeline (all lowercase, no symbols or spaces)"
+  pdeploymentDate:
+    Description: "Aws account (all lowercase, no symbols or spaces)"
     Type: String
-    Default: ecodistribucion
-  pProyecto:
-    Description: "Name of the project owning the pipeline (all lowercase, no symbols or spaces)"
-    Type: String
-    Default: misupply
-  AWSRegion:
-    Type: String
-    Description: AWS Region
-  LIBbucket:
-    Type: String
-    Description: bucket de artectos
 
 Resources:
   myLambdaFunction:
