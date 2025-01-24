@@ -63,6 +63,12 @@ jobs:
           echo "AWS_ACCOUNT_ID_PRUEBA: $awsAccountIdPruba"
           echo "DB_STAGE: $dbStageEcodistribucion"
 
+      - name: Process tags.json
+        id: process-tags
+        run: |
+          TAGS=$(jq -c 'to_entries | map({Key: .key, Value: .value})' tags.json)
+          echo "TAGS=$TAGS" >> $GITHUB_ENV
+
         # 2. Configura las credenciales de AWS
       - name: connect to AWS
         uses: aws-actions/configure-aws-credentials@v1
@@ -189,6 +195,7 @@ jobs:
               awswranglerlayerpy39MD5=$awswranglerlayerpy39MD5 \
               requestlayerpy312MD5=$requestlayerpy312MD5 \
               AWSRegion=$REGION LIBbucket=$$AWS_BUCKET_NAME
+              Tags="$TAGS"
           aws cloudformation describe-stack-events --stack-name $STACK_NAME --max-items 5 --output table
       
       

@@ -23,7 +23,9 @@ Parameters:
   LIBbucket:
     Type: String
     Description: bucket de artectos
-  
+  Tags:
+    Type: String
+    Description: JSON-formatted tags
 
 Resources:
   myLambdaFunction:
@@ -46,7 +48,8 @@ Resources:
       Layers:
         - !Ref dataWranglerLayer
         - !Ref requestLayer
-      
+      Tags:
+        !Sub "${Tags}"
   dataWranglerLayer:
     Type: AWS::Lambda::LayerVersion
     Properties:
