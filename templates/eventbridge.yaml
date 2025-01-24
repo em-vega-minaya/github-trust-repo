@@ -49,7 +49,7 @@ Resources:
       Description: "Regla que captura eventos de creación de objetos en S3 y activa una función Lambda."
       EventPattern:
         source:
-          - "aws.s3"
+          - "arn:aws:s3:::koa-prueba-345345345345"
         detail-type:
           - "AWS API Call via CloudTrail"
         detail:
