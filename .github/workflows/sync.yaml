@@ -54,14 +54,14 @@ jobs:
       # Paso 3: Validar los valores cargados
       - name: Validate Variables
         run: |
-          echo "$TEAM"
-          echo "$ENVIRONMENT"
-          echo "$BRANCH_NAME"
-          echo "$REPOSITORY_NAME"
-          echo "$ARTIFACTORY_BUCKET"
-          echo "$AWS_ACCOUNT_ID"
-          echo "$AWS_ACCOUNT_ID_PRUEBA"
-          echo "$DB_STAGE"
+          echo "TEAM=$TEAM"
+          echo "ENVIRONMENT=$ENVIRONMENT"
+          echo "BRANCH_NAME=$BRANCH_NAME"
+          echo "REPOSITORY_NAME=$REPOSITORY_NAME"
+          echo "ARTIFACTORY_BUCKET=$ARTIFACTORY_BUCKET"
+          echo "AWS_ACCOUNT_ID=$AWS_ACCOUNT_ID"
+          echo "AWS_ACCOUNT_ID_PRUEBA=$AWS_ACCOUNT_ID_PRUEBA"
+          echo "DB_STAGE=$DB_STAGE"
 
       - name: Process tags.json
         id: process-tags
