@@ -29,7 +29,7 @@ Parameters:
   pdeploymentDate:
     Description: "timestamp (all lowercase, no symbols or spaces)"
     Type: String
-  ptag:
+  pTag:
     Description: "tag parameters (all lowercase, no symbols or spaces)"
     Type: CommaDelimitedList
 
