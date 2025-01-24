@@ -74,6 +74,15 @@ Resources:
                   - "secretsmanager:ListSecrets"
                 Resource:
                   - !Sub "arn:aws:secretsmanager:${pAWSRegion}:${pAWSAccountId}:secret:*"
+              - Sid: AccessTosqsPolicy
+                Effect: Allow
+                Action:
+                  - "sqs:ReceiveMessage"
+                  - "sqs:DeleteMessage"
+                  - "sqs:GetQueueAttributes"
+                  - "sqs:GetQueueUrl"
+                Resource: 
+                  - "*"
 
   LambdaMioptimizadorRole:
     Type: AWS::IAM::Role
@@ -125,7 +134,7 @@ Resources:
                   - "sqs:GetQueueUrl"
                 Resource: 
                   - "*"
-              - Sid: AccessTosqsPolicysds
+              - Sid: AccessTosqsPolicy
                 Effect: Allow
                 Action:
                   - "logs:CreateLogGroup"
