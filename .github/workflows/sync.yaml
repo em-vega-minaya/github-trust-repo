@@ -69,7 +69,7 @@ jobs:
         id: process-src
         run: |
           # Define el bucket S3
-          BUCKET_NAME=$AWS_BUCKET_NAME
+          BUCKET_NAME=$ARTIFACTS_S3
 
           # Encuentra todas las carpetas que contienen 'src'
           find stage_lib -type d -name 'src' | while read src_path; do
