@@ -35,7 +35,7 @@ Resources:
       Timeout: 30
       Code:
         S3Bucket: test-artifacts-dev-josemaria
-        S3Key:  ./lambda/stage_misupply/src/lambda_function.zip
+        S3Key:  lambda/stage_misupply/src/lambda_function.zip
       Role: !ImportValue LambdaMisupplyRole-Arn
       Handler: lambda_function.lambda_handler
       Runtime: python3.9
