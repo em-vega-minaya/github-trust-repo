@@ -34,6 +34,7 @@ jobs:
             echo "PARAMETERS_FILE=parameters-prod.json" >> $GITHUB_ENV
           else
             echo "PARAMETERS_FILE=tags.json" >> $GITHUB_ENV
+          fi
 
       # Paso 2: Leer el JSON y exportar las claves como variables de entorno
       - name: Load JSON into Environment Variables
@@ -56,7 +57,7 @@ jobs:
           echo "AWS_ACCOUNT_ID: $awsAccountId"
           echo "AWS_ACCOUNT_ID_PRUEBA: $awsAccountIdPruba"
           echo "DB_STAGE: $dbStageEcodistribucion"
-
+          
     
       - name: Checkout Repo
         uses: actions/checkout@v2
