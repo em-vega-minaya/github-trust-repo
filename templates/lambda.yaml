@@ -82,7 +82,7 @@ Resources:
   myLambdaFunctionprueba:
     Type: AWS::Lambda::Function
     Properties:
-      FunctionName: !Sub "function-${Stage}"
+      FunctionName: !Sub "function-${Stage}-"
       Description: "Lambda function desplegada dinámicamente"
       MemorySize: 256
       Timeout: 30
