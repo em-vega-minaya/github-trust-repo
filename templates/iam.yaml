@@ -71,9 +71,10 @@ Resources:
               - Sid: AccessTosqsPolicy
                 Effect: Allow
                 Action:
-                  - sqs:ReceiveMessage
-                  - sqs:DeleteMessage
-                  - sqs:GetQueueAttributes
+                  - "sqs:ReceiveMessage"
+                  - "sqs:DeleteMessage"
+                  - "sqs:GetQueueAttributes"
+                  - "sqs:GetQueueUrl"
                 Resource: 
                   - !ImportValue DA-myQueueLambda
 
