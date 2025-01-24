@@ -215,7 +215,7 @@ jobs:
                 pAWSRegion=$REGION pAWSAccountId=$AWS_ACCOUNT_ID
                 pAWSAccountOptId=$AWS_ACCOUNT_ID_PRUEBA pdbStageName=$DB_STAGE 
                 pAccountName=$AWS_ACCOUNT pTeamName=TEAM 
-                pdeploymentDate=$TIMESTAMP 
+                pdeploymentDate=$TIMESTAMP  ptag=$TAGS
           aws cloudformation describe-stack-events --stack-name $STACK_NAME --max-items 5 --output table
       
       

@@ -27,8 +27,13 @@ Parameters:
     Description: "Aws account (all lowercase, no symbols or spaces)"
     Type: String
   pdeploymentDate:
-    Description: "Aws account (all lowercase, no symbols or spaces)"
+    Description: "timestamp (all lowercase, no symbols or spaces)"
     Type: String
+  ptag:
+    Description: "tag parameters (all lowercase, no symbols or spaces)"
+    Type: CommaDelimitedList
+
+
 
 Resources:
   myLambdaFunction:
@@ -73,6 +78,30 @@ Resources:
         - !Ref dataWranglerLayer
         - !Ref requestLayer
 
+
+  myLambdaFunctionprueba:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Sub "function-${Stage}"
+      Description: "Lambda function desplegada dinámicamente"
+      MemorySize: 256
+      Timeout: 30
+      Code:
+        S3Bucket: !ImportValue da-ArtifactsBucketlibName
+        S3Key:  lambda/stage_misupply/src/lambda_function.zip
+      Role: !ImportValue LambdaMisupplyRole-Arn
+      Handler: lambda_function.lambda_handler
+      Runtime: python3.9
+      Environment:
+        Variables:
+          ENVIRONMENT: !Ref Stage
+          REGION: !Ref AWSRegion
+      Layers:
+        - !Ref dataWranglerLayer
+        - !Ref requestLayer
+      Tags:
+        - !Ref ptag
+  
   dataWranglerLayer:
     Type: AWS::Lambda::LayerVersion
     Properties:

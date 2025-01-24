@@ -88,8 +88,8 @@ Resources:
               - "s3:GetObjectTagging"
               - "s3:PutObject"
             Resource:
-              - "arn:aws:s3:::${S3Bucket}"
-              - "arn:aws:s3:::${S3Bucket}/*"
+              - !Sub "arn:aws:s3:::${S3Bucket}"
+              - !Sub "arn:aws:s3:::${S3Bucket}/*"
 Outputs:
   ArtifactsBucketlibName:
     Description: Nombre del bucket creado
