@@ -121,9 +121,9 @@ Resources:
                   - !ImportValue DA-myQueueLambda  
 
 Outputs:
-  LambdaMisupplyRole:
-    Description: LambdaMisupplyRole Arn
+  LambdaMioptimizadorRole:
+    Description: LambdaMioptimizadorRole Arn
     Value: !GetAtt LambdaMioptimizadorRole.Arn
     Export:
-      Name: LambdaMisupplyRole-Arn
+      Name: LambdaMioptimizadorRole-Arn
 
