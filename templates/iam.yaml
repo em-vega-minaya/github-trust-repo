@@ -78,7 +78,7 @@ Resources:
   LambdaMioptimizadorRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Sub "role-${pTeamName}-${pProyecto}-${Stage}-prueba"
+      RoleName: !Sub "role-${pTeamName}-${pAccountName}-${Stage}-prueba"
       ManagedPolicyArns:
         - "arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole"
         - "arn:aws:iam::aws:policy/AmazonSNSFullAccess"
@@ -99,7 +99,7 @@ Resources:
               - "sts:AssumeRole"
       Path: "/"
       Policies:
-        - PolicyName: !Sub "${pTeamName}-${pcuenta}-access-to-s3-policy-prueba"
+        - PolicyName: !Sub "${pTeamName}-${pAWSAccountId}-access-to-s3-policy-prueba"
           PolicyDocument:
             Version: "2012-10-17"
             Statement:
@@ -107,7 +107,7 @@ Resources:
                 Effect: Allow
                 Action: s3:*
                 Resource:
-                  - !Sub "arn:aws:s3:::${pTeamName}-${pcuenta}-stage-${Stage}/*"
+                  - !Sub "arn:aws:s3:::${pTeamName}-${pAWSAccountId}-stage-${Stage}/*"
               - Sid: ReadSecretsManager
                 Effect: Allow
                 Action:
