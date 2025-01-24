@@ -70,7 +70,7 @@ jobs:
           echo "$TAGS"
 
       - name: Process tags.jsonsss
-        id: process-tags
+        id: process-tagsss
         run: |
           TAGS=$(jq -c 'map(to_entries[] | {Key: .key, Value: .value})' tags.json)
 
