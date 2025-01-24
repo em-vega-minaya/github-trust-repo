@@ -1,26 +1,26 @@
 [
   {
-      "team": "da"
+      "TEAM": "da"
   },
   {
-      "environment": "dev"
+      "ENVIRONMENT": "dev"
   },
   {
-      "branchName": "develop"
+      "BRANCH_NAME": "develop"
   },
   {
-      "repositoryName":"github-trust-repo"
+      "REPOSITORY_NAME":"github-trust-repo"
   },    
   {
-      "artifactorybucket":"test-artifacts-dev-josemaria"
+      "ARTIFACTORY_BUCKET":"test-artifacts-dev-josemaria"
   },
   {
-      "awsAccountId":"039612881651"
+      "AWS_ACCOUNT_ID":"039612881651"
   },
   {
-      "awsAccountIdPruba":"53453453453"
+      "AWS_ACCOUNT_ID_PRUEBA":"53453453453"
   },
   {
-      "dbStageEcodistribucion":"db_analitycs_prueba"
+      "DB_STAGE":"db_analitycs_prueba"
   }
 ]

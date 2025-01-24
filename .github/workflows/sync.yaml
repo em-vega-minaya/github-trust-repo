@@ -54,14 +54,14 @@ jobs:
       # Paso 3: Validar los valores cargados
       - name: Validate Variables
         run: |
-          echo "TEAM: $team"
-          echo "ENVIRONMENT: $environment"
-          echo "BRANCH_NAME: $branchName"
-          echo "REPOSITORY_NAME: $repositoryName"
-          echo "ARTIFACTORY_BUCKET: $artifactorybucket"
-          echo "AWS_ACCOUNT_ID: $awsAccountId"
-          echo "AWS_ACCOUNT_ID_PRUEBA: $awsAccountIdPruba"
-          echo "DB_STAGE: $dbStageEcodistribucion"
+          echo "$team"
+          echo "$environment"
+          echo "$branchName"
+          echo "$repositoryName"
+          echo "$artifactorybucket"
+          echo "$awsAccountId"
+          echo "$awsAccountIdPruba"
+          echo "$dbStageEcodistribucion"
 
       - name: Process tags.json
         id: process-tags
@@ -195,7 +195,7 @@ jobs:
               awswranglerlayerpy39MD5=$awswranglerlayerpy39MD5 \
               requestlayerpy312MD5=$requestlayerpy312MD5 \
               AWSRegion=$REGION LIBbucket=$$AWS_BUCKET_NAME
-              Tags='${{ steps.process-tags.outputs.tags }}'
+              Tags=$TAGS
           aws cloudformation describe-stack-events --stack-name $STACK_NAME --max-items 5 --output table
       
       
