@@ -124,32 +124,16 @@ Resources:
                   - "sqs:GetQueueAttributes"
                   - "sqs:GetQueueUrl"
                 Resource: 
-                  - !ImportValue DA-myQueueLambda  
-
-
-  LambdaExecutionRoles:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service:
-                - lambda.amazonaws.com
-            Action:
-              - "sts:AssumeRole"
-      Policies:
-        - PolicyName: LambdaBasicExecution
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              - Effect: Allow
+                  - !ImportValue DA-myQueueLambda 
+              - Sid: AccessTosqsPolicy
+                Effect: Allow
                 Action:
                   - "logs:CreateLogGroup"
                   - "logs:CreateLogStream"
                   - "logs:PutLogEvents"
                 Resource: "arn:aws:logs:*:*:*"
+                 
+
   
 
 Outputs:
