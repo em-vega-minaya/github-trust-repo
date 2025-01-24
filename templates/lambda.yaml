@@ -25,7 +25,7 @@ Parameters:
     Description: bucket de artectos
   Tags:
     Description: bucket de artectos
-    Type: List
+    Type: CommaDelimitedList
 
 Resources:
   myLambdaFunction:
@@ -72,7 +72,8 @@ Resources:
         - !Ref dataWranglerLayer
         - !Ref requestLayer
       Tags:
-        !Ref Tags
+        - Key: !Select [0, !Split [=, !Select [0, !Ref Tags]]]
+          Value: !Select [1, !Split [=, !Select [0, !Ref Tags]]]
 
   dataWranglerLayer:
     Type: AWS::Lambda::LayerVersion
