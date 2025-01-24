@@ -15,5 +15,5 @@ Resources:
     Properties:
       BatchSize: 10  # Número máximo de mensajes que Lambda procesará por invocación
       EventSourceArn: !GetAtt MyQueue.Arn
-      FunctionName: !ImportValue MyLambdaFunction.Arn
+      FunctionName: !ImportValue DA-myLambdaFunctionArn
       Enabled: true
