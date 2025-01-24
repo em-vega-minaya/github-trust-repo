@@ -98,11 +98,11 @@ jobs:
             --stack-name $S3_STACK_NAME \
             --capabilities CAPABILITY_NAMED_IAM \
             --no-fail-on-empty-changeset \
-            --parameter-overrides Stage=$ENVIRONMENT \
-              pBranchName=$BRANCH_NAME pArtifactsBucket=$ARTIFACTORY_BUCKET \
-              pAWSRegion=$REGION pAWSAccountId=$AWS_ACCOUNT_ID \
-              pAWSAccountOptId=$AWS_ACCOUNT_ID_PRUEBA pdbStageName=$DB_STAGE \
-              pAccountName=$AWS_ACCOUNT pTeamName=TEAM \ 
+            --parameter-overrides Stage=$ENVIRONMENT 
+              pBranchName=$BRANCH_NAME pArtifactsBucket=$ARTIFACTORY_BUCKET 
+              pAWSRegion=$REGION pAWSAccountId=$AWS_ACCOUNT_ID
+              pAWSAccountOptId=$AWS_ACCOUNT_ID_PRUEBA pdbStageName=$DB_STAGE 
+              pAccountName=$AWS_ACCOUNT pTeamName=TEAM 
               pdeploymentDate=$TIMESTAMP 
           aws cloudformation describe-stack-events --stack-name $S3_STACK_NAME --max-items 5
 
@@ -156,11 +156,11 @@ jobs:
             --capabilities CAPABILITY_NAMED_IAM \
             --no-fail-on-empty-changeset \
             --s3-bucket prueba-exampe-josemaria-git \
-            --parameter-overrides Stage=$ENVIRONMENT \
-              pBranchName=$BRANCH_NAME pArtifactsBucket=$ARTIFACTORY_BUCKET \
-              pAWSRegion=$REGION pAWSAccountId=$AWS_ACCOUNT_ID \
-              pAWSAccountOptId=$AWS_ACCOUNT_ID_PRUEBA pdbStageName=$DB_STAGE \
-              pAccountName=$AWS_ACCOUNT pTeamName=TEAM \ 
+            --parameter-overrides Stage=$ENVIRONMENT 
+              pBranchName=$BRANCH_NAME pArtifactsBucket=$ARTIFACTORY_BUCKET 
+              pAWSRegion=$REGION pAWSAccountId=$AWS_ACCOUNT_ID
+              pAWSAccountOptId=$AWS_ACCOUNT_ID_PRUEBA pdbStageName=$DB_STAGE 
+              pAccountName=$AWS_ACCOUNT pTeamName=TEAM 
               pdeploymentDate=$TIMESTAMP 
           aws cloudformation describe-stack-events --stack-name $STACK_NAME --max-items 5 --output table
 
@@ -175,11 +175,11 @@ jobs:
             --stack-name $STACK_NAME \
             --capabilities CAPABILITY_NAMED_IAM \
             --no-fail-on-empty-changeset \
-            --parameter-overrides Stage=$ENVIRONMENT \
-              pBranchName=$BRANCH_NAME pArtifactsBucket=$ARTIFACTORY_BUCKET \
-              pAWSRegion=$REGION pAWSAccountId=$AWS_ACCOUNT_ID \
-              pAWSAccountOptId=$AWS_ACCOUNT_ID_PRUEBA pdbStageName=$DB_STAGE \
-              pAccountName=$AWS_ACCOUNT pTeamName=TEAM \ 
+            --parameter-overrides Stage=$ENVIRONMENT 
+              pBranchName=$BRANCH_NAME pArtifactsBucket=$ARTIFACTORY_BUCKET 
+              pAWSRegion=$REGION pAWSAccountId=$AWS_ACCOUNT_ID
+              pAWSAccountOptId=$AWS_ACCOUNT_ID_PRUEBA pdbStageName=$DB_STAGE 
+              pAccountName=$AWS_ACCOUNT pTeamName=TEAM 
               pdeploymentDate=$TIMESTAMP 
           aws cloudformation describe-stack-events --stack-name $STACK_NAME --max-items 5
 
@@ -206,11 +206,11 @@ jobs:
             --capabilities CAPABILITY_NAMED_IAM \
             --no-fail-on-empty-changeset \
             --s3-bucket prueba-exampe-josemaria-git \
-            --parameter-overrides Stage=$ENVIRONMENT \
-              pBranchName=$BRANCH_NAME pArtifactsBucket=$ARTIFACTORY_BUCKET \
-              pAWSRegion=$REGION pAWSAccountId=$AWS_ACCOUNT_ID \
-              pAWSAccountOptId=$AWS_ACCOUNT_ID_PRUEBA pdbStageName=$DB_STAGE \
-              pAccountName=$AWS_ACCOUNT pTeamName=TEAM \ 
+            --parameter-overrides Stage=$ENVIRONMENT 
+              pBranchName=$BRANCH_NAME pArtifactsBucket=$ARTIFACTORY_BUCKET 
+              pAWSRegion=$REGION pAWSAccountId=$AWS_ACCOUNT_ID
+              pAWSAccountOptId=$AWS_ACCOUNT_ID_PRUEBA pdbStageName=$DB_STAGE 
+              pAccountName=$AWS_ACCOUNT pTeamName=TEAM 
               pdeploymentDate=$TIMESTAMP 
           aws cloudformation describe-stack-events --stack-name $STACK_NAME --max-items 5 --output table
       
@@ -228,11 +228,11 @@ jobs:
             --capabilities CAPABILITY_NAMED_IAM \
             --no-fail-on-empty-changeset \
             --s3-bucket prueba-exampe-josemaria-git \
-            --parameter-overrides Stage=$ENVIRONMENT \
-              pBranchName=$BRANCH_NAME pArtifactsBucket=$ARTIFACTORY_BUCKET \
-              pAWSRegion=$REGION pAWSAccountId=$AWS_ACCOUNT_ID \
-              pAWSAccountOptId=$AWS_ACCOUNT_ID_PRUEBA pdbStageName=$DB_STAGE \
-              pAccountName=$AWS_ACCOUNT pTeamName=TEAM \ 
+            --parameter-overrides Stage=$ENVIRONMENT 
+              pBranchName=$BRANCH_NAME pArtifactsBucket=$ARTIFACTORY_BUCKET 
+              pAWSRegion=$REGION pAWSAccountId=$AWS_ACCOUNT_ID
+              pAWSAccountOptId=$AWS_ACCOUNT_ID_PRUEBA pdbStageName=$DB_STAGE 
+              pAccountName=$AWS_ACCOUNT pTeamName=TEAM 
               pdeploymentDate=$TIMESTAMP 
           aws cloudformation describe-stack-events --stack-name $STACK_NAME --max-items 5 --output table
 
@@ -249,11 +249,11 @@ jobs:
             --stack-name $STACK_NAME \
             --capabilities CAPABILITY_NAMED_IAM \
             --no-fail-on-empty-changeset \
-            --parameter-overrides Stage=$ENVIRONMENT \
-              pBranchName=$BRANCH_NAME pArtifactsBucket=$ARTIFACTORY_BUCKET \
-              pAWSRegion=$REGION pAWSAccountId=$AWS_ACCOUNT_ID \
-              pAWSAccountOptId=$AWS_ACCOUNT_ID_PRUEBA pdbStageName=$DB_STAGE \
-              pAccountName=$AWS_ACCOUNT pTeamName=TEAM \ 
+            --parameter-overrides Stage=$ENVIRONMENT 
+              pBranchName=$BRANCH_NAME pArtifactsBucket=$ARTIFACTORY_BUCKET 
+              pAWSRegion=$REGION pAWSAccountId=$AWS_ACCOUNT_ID
+              pAWSAccountOptId=$AWS_ACCOUNT_ID_PRUEBA pdbStageName=$DB_STAGE 
+              pAccountName=$AWS_ACCOUNT pTeamName=TEAM 
               pdeploymentDate=$TIMESTAMP 
           aws cloudformation describe-stack-events --stack-name $STACK_NAME --max-items 5
     
