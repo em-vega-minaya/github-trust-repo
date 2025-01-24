@@ -66,12 +66,6 @@ jobs:
       - name: Process tags.json
         id: process-tags
         run: |
-          TAGS=$(jq -c 'to_entries | map({Key: .key, Value: .value})' tags.json)
-          echo "$TAGS"
-
-      - name: Process tags.jsonsss
-        id: process-tagsss
-        run: |
           TAGS=$(jq -c 'map(to_entries[] | {Key: .key, Value: .value})' tags.json)
 
           # Validar que los tags no estén vacíos

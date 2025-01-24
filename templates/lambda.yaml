@@ -23,6 +23,8 @@ Parameters:
   LIBbucket:
     Type: String
     Description: bucket de artectos
+
+Mappings:
   Tags:
     Type: String
     Description: JSON-formatted tags
