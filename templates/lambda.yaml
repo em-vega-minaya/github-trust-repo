@@ -25,6 +25,7 @@ Parameters:
     Description: bucket de artectos
   Tags:
     Description: bucket de artectos
+    Type: List
 
 Resources:
   myLambdaFunction:
