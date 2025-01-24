@@ -124,7 +124,7 @@ Resources:
                   - "sqs:GetQueueAttributes"
                   - "sqs:GetQueueUrl"
                 Resource: 
-                  - !ImportValue DA-myQueueLambda 
+                  - "*"
               - Sid: AccessTosqsPolicy
                 Effect: Allow
                 Action:
