@@ -27,7 +27,7 @@ Parameters:
     Description: "Aws account (all lowercase, no symbols or spaces)"
     Type: String
   pdeploymentDate:
-    Description: "timestamp (all lowercase, no symbols or spaces)"
+    Description: "Aws account (all lowercase, no symbols or spaces)"
     Type: String
   pTag:
     Description: "tag parameters (all lowercase, no symbols or spaces)"

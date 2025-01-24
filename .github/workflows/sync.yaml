@@ -99,6 +99,7 @@ jobs:
             --capabilities CAPABILITY_NAMED_IAM \
             --no-fail-on-empty-changeset \
             --parameter-overrides \
+                pTeamName=$TEAM \
                 Stage=$ENVIRONMENT \
                 pBranchName=$BRANCH_NAME \
                 pArtifactsBucket=$ARTIFACTORY_BUCKET \
@@ -161,6 +162,7 @@ jobs:
             --no-fail-on-empty-changeset \
             --s3-bucket prueba-exampe-josemaria-git \
             --parameter-overrides \
+                pTeamName=$TEAM \
                 Stage=$ENVIRONMENT \
                 pBranchName=$BRANCH_NAME \
                 pArtifactsBucket=$ARTIFACTORY_BUCKET \
@@ -184,6 +186,7 @@ jobs:
             --capabilities CAPABILITY_NAMED_IAM \
             --no-fail-on-empty-changeset \
             --parameter-overrides \
+                pTeamName=$TEAM \
                 Stage=$ENVIRONMENT \
                 pBranchName=$BRANCH_NAME \
                 pArtifactsBucket=$ARTIFACTORY_BUCKET \
@@ -219,6 +222,7 @@ jobs:
             --no-fail-on-empty-changeset \
             --s3-bucket prueba-exampe-josemaria-git \
             --parameter-overrides \
+                pTeamName=$TEAM \
                 Stage=$ENVIRONMENT \
                 pBranchName=$BRANCH_NAME \
                 pArtifactsBucket=$ARTIFACTORY_BUCKET \
@@ -246,6 +250,7 @@ jobs:
             --no-fail-on-empty-changeset \
             --s3-bucket prueba-exampe-josemaria-git \
             --parameter-overrides \
+                pTeamName=$TEAM \
                 Stage=$ENVIRONMENT \
                 pBranchName=$BRANCH_NAME \
                 pArtifactsBucket=$ARTIFACTORY_BUCKET \
@@ -271,6 +276,7 @@ jobs:
             --capabilities CAPABILITY_NAMED_IAM \
             --no-fail-on-empty-changeset \
             --parameter-overrides \
+                pTeamName=$TEAM \
                 Stage=$ENVIRONMENT \
                 pBranchName=$BRANCH_NAME \
                 pArtifactsBucket=$ARTIFACTORY_BUCKET \
