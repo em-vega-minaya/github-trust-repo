@@ -38,7 +38,7 @@ Resources:
         State: "ENABLED"
         Targets:
           - Id: "MyLambdaTarget"
-            Arn: !GetAtt MyLambdaFunction.Arn
+            Arn: "arn:aws:lambda:us-east-1:039612881651:function:function-dev-prueba"
 
 
 
@@ -61,7 +61,7 @@ Resources:
       State: ENABLED
       Targets:
         - Id: LambdaTarget
-          -Arn: !Sub arn:aws:lambda:us-east-1:039612881651:function:lambda-example-Josemaria-api_Misupply
+          -Arn: "arn:aws:lambda:us-east-1:039612881651:function:lambda-example-Josemaria-api_Misupply"
 
 
 
