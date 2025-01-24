@@ -72,8 +72,7 @@ Resources:
         - !Ref dataWranglerLayer
         - !Ref requestLayer
       Tags:
-        - Key: !Select [0, !Split [=, !Select [0, !Ref Tags]]]
-          Value: !Select [1, !Split [=, !Select [0, !Ref Tags]]]
+        - !Ref Tags
 
   dataWranglerLayer:
     Type: AWS::Lambda::LayerVersion
