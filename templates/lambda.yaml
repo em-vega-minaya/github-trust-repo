@@ -31,7 +31,7 @@ Parameters:
     Type: String
   pTag:
     Description: "tag parameters (all lowercase, no symbols or spaces)"
-    Type: CommaDelimitedList
+    Type: List<AWS::EC2::Tag>
 
 
 
@@ -57,7 +57,7 @@ Resources:
         - !Ref dataWranglerLayer
         - !Ref requestLayer
 
-  myLambdaFunction:
+  myLambdaFunctiontuca:
     Type: AWS::Lambda::Function
     Properties:
       FunctionName: !Sub "function-${Stage}-prueba"
@@ -79,16 +79,16 @@ Resources:
         - !Ref requestLayer
 
 
-  myLambdaFunctionprueba:
+  myLambdaFunction:
     Type: AWS::Lambda::Function
     Properties:
-      FunctionName: !Sub "function-${Stage}-"
+      FunctionName: !Sub "function-${Stage}"
       Description: "Lambda function desplegada dinámicamente"
       MemorySize: 256
       Timeout: 30
       Code:
         S3Bucket: !ImportValue da-ArtifactsBucketlibName
-        S3Key:  lambda/stage_misupply/src/lambda_function.zip
+        S3Key: lambda/stage_misupply/src/lambda_function.zip
       Role: !ImportValue LambdaMisupplyRole-Arn
       Handler: lambda_function.lambda_handler
       Runtime: python3.9
@@ -99,16 +99,9 @@ Resources:
       Layers:
         - !Ref dataWranglerLayer
         - !Ref requestLayer
-      Tags:
-        # Convertimos la lista LambdaTags en objetos válidos para Tags
-        - Fn::If:
-            - IsLambdaTagsSet
-            - !Split
-              - ","
-              - !Join
-                - ","
-                - !Ref pTag
-            - !Ref "AWS::NoValue"
+      Tags: !Ref pTag
+
+
   
   dataWranglerLayer:
     Type: AWS::Lambda::LayerVersion
@@ -133,10 +126,8 @@ Resources:
       LayerName: !Sub request-py3-12-${Stage}
 
 Conditions:
-  IsLambdaTagsSet: !Not 
-    - !Equals 
-      - !Join [",", !Ref pTag]
-      - ""
+  IsLambdaTagsSet: !Not
+    - !Equals [!Ref pTag, []]
 
 
 Outputs: 
