@@ -60,12 +60,46 @@ jobs:
               AWSAccountId=$AWS_ACCOUNT_ID
           aws cloudformation describe-stack-events --stack-name $S3_STACK_NAME --max-items 5
 
-      - name: Sync Folder to S3
-        id: sync-folder
+      #- name: Sync Folder to S3
+      #  id: sync-folder
+      #  run: |
+      #    aws s3 sync ./stage_lib s3://$AWS_BUCKET_NAME/
+      #    echo "Folder synchronized to S3 bucket: $AWS_BUCKET_NAME"
+      - name: Copy 'src' Folders and Zip lambda_function.py to S3
+        id: process-src
         run: |
-          aws s3 sync ./stage_lib s3://$AWS_BUCKET_NAME/
-          echo "Folder synchronized to S3 bucket: $AWS_BUCKET_NAME"
-      
+          # Define el bucket S3
+          BUCKET_NAME=$AWS_BUCKET_NAME
+
+          # Encuentra todas las carpetas que contienen 'src'
+          find stage_lib -type d -name 'src' | while read src_path; do
+            # Recrear la ruta en S3
+            s3_path=$(echo $src_path | sed "s|stage_lib|s3://$BUCKET_NAME|")
+            aws s3api put-object --bucket $BUCKET_NAME --key "$(echo $s3_path | sed 's|s3://[^/]\+/||')/"
+
+            # Copiar los archivos dentro del directorio 'src' a S3
+            find "$src_path" -type f | while read file; do
+              file_key=$(echo $file | sed "s|stage_lib|s3://$BUCKET_NAME|")
+              aws s3 cp "$file" "$file_key"
+            done
+
+            # Si existe un archivo lambda_function.py, zip y subir
+            lambda_file="$src_path/lambda_function.py"
+            if [ -f "$lambda_file" ]; then
+              zip_file="$src_path/lambda_function.zip"
+              zip -j "$zip_file" "$lambda_file"
+
+              # Subir el archivo zip al S3
+              zip_s3_path=$(echo $zip_file | sed "s|stage_lib|s3://$BUCKET_NAME|")
+              aws s3 cp "$zip_file" "$zip_s3_path"
+
+              # Eliminar el archivo ZIP local después de subirlo
+              rm "$zip_file"
+            fi
+          done
+
+          echo "All 'src' files copied and lambda_function.py zipped and uploaded to S3."
+
       - name: Deploy IAM
         id: iam
         shell: bash
