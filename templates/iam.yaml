@@ -68,6 +68,48 @@ Resources:
                   - "secretsmanager:ListSecrets"
                 Resource:
                   - !Sub "arn:aws:secretsmanager:${AWSRegion}:${AWSAccountId}:secret:*"
+
+  LambdaMisupplyRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "role-${pTeamName}-${pProyecto}-${Stage}-prueba"
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole"
+        - "arn:aws:iam::aws:policy/AmazonSNSFullAccess"
+        - "arn:aws:iam::aws:policy/AmazonAthenaFullAccess"
+        - "arn:aws:iam::aws:policy/SecretsManagerReadWrite"
+        - "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
+        - "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
+      MaxSessionDuration: 43200
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - "glue.amazonaws.com"
+                - "lambda.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Path: "/"
+      Policies:
+        - PolicyName: !Sub "${pTeamName}-${pcuenta}-access-to-s3-policy-prueba"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: AccessToS3Policy
+                Effect: Allow
+                Action: s3:*
+                Resource:
+                  - !Sub "arn:aws:s3:::${pTeamName}-${pcuenta}-stage-${Stage}/*"
+              - Sid: ReadSecretsManager
+                Effect: Allow
+                Action:
+                  - "secretsmanager:GetSecretValue"
+                  - "secretsmanager:DescribeSecret"
+                  - "secretsmanager:ListSecrets"
+                Resource:
+                  - !Sub "arn:aws:secretsmanager:${AWSRegion}:${AWSAccountId}:secret:*"
               - Sid: AccessTosqsPolicy
                 Effect: Allow
                 Action:
@@ -76,8 +118,7 @@ Resources:
                   - "sqs:GetQueueAttributes"
                   - "sqs:GetQueueUrl"
                 Resource: 
-                  - !ImportValue DA-myQueueLambda
-
+                  - !ImportValue DA-myQueueLambda  
 
 Outputs:
   LambdaMisupplyRole:
