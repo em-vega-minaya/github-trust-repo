@@ -52,7 +52,7 @@ Resources:
       Environment:
         Variables:
           ENVIRONMENT: !Ref Stage
-          REGION: !Ref AWSRegion
+          REGION: !Ref pAWSRegion
       Layers:
         - !Ref dataWranglerLayer
         - !Ref requestLayer
@@ -73,7 +73,7 @@ Resources:
       Environment:
         Variables:
           ENVIRONMENT: !Ref Stage
-          REGION: !Ref AWSRegion
+          REGION: !Ref pAWSRegion
       Layers:
         - !Ref dataWranglerLayer
         - !Ref requestLayer
@@ -95,12 +95,12 @@ Resources:
       Environment:
         Variables:
           ENVIRONMENT: !Ref Stage
-          REGION: !Ref AWSRegion
+          REGION: !Ref pAWSRegion
       Layers:
         - !Ref dataWranglerLayer
         - !Ref requestLayer
       Tags:
-        - !Ref ptag
+        - !Ref pTag
   
   dataWranglerLayer:
     Type: AWS::Lambda::LayerVersion
