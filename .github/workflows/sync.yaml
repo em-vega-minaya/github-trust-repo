@@ -32,11 +32,11 @@ jobs:
       - name: Set Parameters File
         run: |
           if [[ "${{ github.ref_name }}" == "develop" ]]; then
-            echo "PARAMETERS_FILE=./parameters-dev.json" >> $GITHUB_ENV
+            echo "PARAMETERS_FILE=../parameters-dev.json" >> $GITHUB_ENV
           elif [[ "${{ github.ref_name }}" == "qa" ]]; then
-            echo "PARAMETERS_FILE=./parameters-qa.json" >> $GITHUB_ENV
+            echo "PARAMETERS_FILE=../parameters-qa.json" >> $GITHUB_ENV
           elif [[ "${{ github.ref_name }}" == "prod" ]]; then
-            echo "PARAMETERS_FILE=./parameters-prod.json" >> $GITHUB_ENV
+            echo "PARAMETERS_FILE=../parameters-prod.json" >> $GITHUB_ENV
           else
             echo "PARAMETERS_FILE=tags.json" >> $GITHUB_ENV
           fi
