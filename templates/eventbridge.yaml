@@ -71,9 +71,3 @@ Outputs:
     Value: !GetAtt MyEventRule.Arn
     Export:
       Name: DA-MyEventRule
-
-  S3CreateObjectRule:
-    Description: S3CreateObjectRule Arn
-    Value: !GetAtt S3CreateObjectRule.Arn
-    Export:
-      Name: DA-S3CreateObjectRule
