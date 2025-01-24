@@ -134,7 +134,7 @@ Resources:
                   - "sqs:GetQueueUrl"
                 Resource: 
                   - "*"
-              - Sid: AccessTosqsPolicy
+              - Sid: AccessTosqsPolicyghg
                 Effect: Allow
                 Action:
                   - "logs:CreateLogGroup"
