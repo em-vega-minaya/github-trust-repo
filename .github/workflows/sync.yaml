@@ -24,7 +24,7 @@ jobs:
         run: |
           echo "TIMESTAMP=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
       
-      - name: Debug: List directory contents
+      - name: List directory contents
         run: |
           echo "Current directory: $(pwd)"
           ls -l
