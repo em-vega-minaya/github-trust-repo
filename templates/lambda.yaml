@@ -6,35 +6,36 @@ Parameters:
     Description: Environment name (dev/qa/prod)
     Default: dev
   pTeamName:
-    Type: String
     Description: "Name of the team owning the pipeline (all lowercase, no symbols or spaces)"
+    Type: String
     Default: da
   pCuenta:
-    Type: String
     Description: "Name of the account owning the pipeline (all lowercase, no symbols or spaces)"
+    Type: String
     Default: ecodistribucion
   pProyecto:
-    Type: String
     Description: "Name of the project owning the pipeline (all lowercase, no symbols or spaces)"
+    Type: String
     Default: misupply
   AWSRegion:
     Type: String
     Description: AWS Region
   LIBbucket:
     Type: String
-    Description: Bucket for artifacts
+    Description: bucket de artectos
+  
 
 Resources:
   myLambdaFunction:
     Type: AWS::Lambda::Function
     Properties:
       FunctionName: !Sub "function-${Stage}"
-      Description: "Dynamically deployed Lambda function"
+      Description: "Lambda function desplegada dinámicamente"
       MemorySize: 256
       Timeout: 30
       Code:
         S3Bucket: test-artifacts-dev-josemaria
-        S3Key: lambda/stage_misupply/src/lambda_function.zip
+        S3Key:  lambda/stage_misupply/src/lambda_function.zip
       Role: !ImportValue LambdaMisupplyRole-Arn
       Handler: lambda_function.lambda_handler
       Runtime: python3.9
@@ -45,7 +46,7 @@ Resources:
       Layers:
         - !Ref dataWranglerLayer
         - !Ref requestLayer
-
+      
   dataWranglerLayer:
     Type: AWS::Lambda::LayerVersion
     Properties:
@@ -61,9 +62,18 @@ Resources:
     Type: AWS::Lambda::LayerVersion
     Properties:
       CompatibleRuntimes:
-        - python3.9
+        - python3.12
       Content:
         S3Bucket: !ImportValue da-ArtifactsBucketlibName
-        S3Key: layers/request-layer-py3-9.zip
-      Description: Request Layer for Python 3.9
-      LayerName: !Sub request-layer-py3-9-${Stage}
+        S3Key: layers/request-layer-py3-12.zip
+      Description: Request Layer for Python 3.12
+      LayerName: !Sub request-py3-12-${Stage}
+
+
+Outputs: 
+  myLambdaFunction:
+    Description: myLambdaFunction Arn
+    Value: !GetAtt myLambdaFunction.Arn
+    Export:
+      Name: DA-myLambdaFunctionArn
+
