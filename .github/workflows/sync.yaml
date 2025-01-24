@@ -162,6 +162,26 @@ jobs:
               requestlayerpy312MD5=$requestlayerpy312MD5 \
               AWSRegion=$REGION LIBbucket=$$AWS_BUCKET_NAME
           aws cloudformation describe-stack-events --stack-name $STACK_NAME --max-items 5 --output table
+      
+      - name: Deploy Events
+        id: events
+        shell: bash
+        env:
+          STACK_NAME: da-josemaria-events
+        run: |
+          aws cloudformation deploy --template-file templates/events.yaml \
+            --region $REGION \
+            --stack-name $STACK_NAME \
+            --capabilities CAPABILITY_NAMED_IAM \
+            --no-fail-on-empty-changeset \
+            --s3-bucket prueba-exampe-josemaria-git \
+            --parameter-overrides Stage=$ENVIRONMENT \
+              deploymentDate=$TIMESTAMP \
+              awswranglerlayerpy39MD5=$awswranglerlayerpy39MD5 \
+              requestlayerpy312MD5=$requestlayerpy312MD5 \
+              AWSRegion=$REGION LIBbucket=$$AWS_BUCKET_NAME
+          aws cloudformation describe-stack-events --stack-name $STACK_NAME --max-items 5 --output table
+
 
       - name: Deploy ATHENA
         id: athena

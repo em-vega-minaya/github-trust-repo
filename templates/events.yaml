@@ -1,0 +1,10 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Resources:
+  SQSLambdaMapping:
+    Type: AWS::Lambda::EventSourceMapping
+    Properties:
+      BatchSize: 10  # Número máximo de mensajes que Lambda procesará por invocación
+      EventSourceArn: !ImportValue DA-myQueueLambda
+      FunctionName: !ImportValue DA-myLambdaFunctionArn
+      Enabled: true
