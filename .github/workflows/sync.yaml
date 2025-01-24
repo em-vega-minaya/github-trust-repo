@@ -80,7 +80,6 @@ jobs:
             # Copiar los archivos dentro del directorio 'src' a S3
             find "$src_path" -type f | while read file; do
               file_key=$(echo $file | sed "s|stage_lib|s3://$BUCKET_NAME|")
-              aws s3 cp "$file" "$file_key"
             done
 
             # Si existe un archivo lambda_function.py, zip y subir
