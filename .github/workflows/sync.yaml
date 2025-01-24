@@ -67,7 +67,7 @@ jobs:
         id: process-tags
         run: |
           TAGS=$(jq -c 'to_entries | map({Key: .key, Value: .value})' tags.json)
-          echo "::set-output name=tags::$TAGS"
+          echo "$TAGS"
 
         # 2. Configura las credenciales de AWS
       - name: connect to AWS
