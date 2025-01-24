@@ -64,7 +64,13 @@ Resources:
           Arn: arn:aws:lambda:us-east-1:039612881651:function:lambda-example-Josemaria-api_Misupply
 
 
-
+  LambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: arn:aws:lambda:us-east-1:039612881651:function:lambda-example-Josemaria-api_Misupply
+      Action: lambda:InvokeFunction
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt S3CreateObjectRule.Arn
 Outputs: 
   MyEventRule:
     Description: MyEventRule Arn
