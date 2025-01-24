@@ -20,6 +20,10 @@ jobs:
       AWS_ACCOUNT_OPTIMIZADOR: "5345345345"  
       ENVIRONMENT: "dev" 
     steps:
+
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+
       - name: Set timestamp
         run: |
           echo "TIMESTAMP=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
@@ -58,11 +62,7 @@ jobs:
           echo "AWS_ACCOUNT_ID: $awsAccountId"
           echo "AWS_ACCOUNT_ID_PRUEBA: $awsAccountIdPruba"
           echo "DB_STAGE: $dbStageEcodistribucion"
-          
-    
-      - name: Checkout Repo
-        uses: actions/checkout@v2
-    
+
         # 2. Configura las credenciales de AWS
       - name: connect to AWS
         uses: aws-actions/configure-aws-credentials@v1
@@ -71,10 +71,7 @@ jobs:
           role-to-assume: ${{ secrets.AWS_IAM_ROLE }}
           aws-region: ${{ secrets.AWS_REGION }}
       
-      - name: Verify current directory and files
-        run: |
-          echo "Current directory: $(pwd)"
-          ls -l
+      
 
       - name: Deploy S3
         id: s3
