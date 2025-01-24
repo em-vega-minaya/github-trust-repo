@@ -23,6 +23,11 @@ jobs:
       - name: Set timestamp
         run: |
           echo "TIMESTAMP=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
+      
+      - name: Debug: List directory contents
+        run: |
+          echo "Current directory: $(pwd)"
+          ls -l
 
       - name: Set Parameters File
         run: |
