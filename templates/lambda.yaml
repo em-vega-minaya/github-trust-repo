@@ -133,7 +133,11 @@ Resources:
       LayerName: !Sub request-py3-12-${Stage}
 
 Conditions:
-  IsLambdaTagsSet: !Not [ !Equals [ !Ref pTag, ""] ]
+  IsLambdaTagsSet: !Not 
+    - !Equals 
+      - !Join [",", !Ref pTag]
+      - ""
+
 
 Outputs: 
   myLambdaFunction:
