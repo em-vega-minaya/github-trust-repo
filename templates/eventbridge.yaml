@@ -42,9 +42,38 @@ Resources:
 
 
 
+  S3CreateObjectRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Name: S3CreateObjectEventRuleprueba
+      Description: "Regla que captura eventos de creación de objetos en S3 y activa una función Lambda."
+      EventPattern:
+        source:
+          - "aws.s3"
+        detail-type:
+          - "AWS API Call via CloudTrail"
+        detail:
+          eventSource:
+            - "s3.amazonaws.com"
+          eventName:
+            - "PutObject"
+            - "CompleteMultipartUpload"
+      State: ENABLED
+      Targets:
+        - Id: LambdaTarget
+          -Arn: !Sub arn:aws:lambda:us-east-1:039612881651:function:lambda-example-Josemaria-api_Misupply
+
+
+
 Outputs: 
   MyEventRule:
     Description: MyEventRule Arn
     Value: !GetAtt MyEventRule.Arn
     Export:
       Name: DA-MyEventRule
+
+  S3CreateObjectRule:
+    Description: S3CreateObjectRule Arn
+    Value: !GetAtt S3CreateObjectRule.Arn
+    Export:
+      Name: DA-S3CreateObjectRule

@@ -126,6 +126,32 @@ Resources:
                 Resource: 
                   - !ImportValue DA-myQueueLambda  
 
+
+  LambdaExecutionRoles:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - "sts:AssumeRole"
+      Policies:
+        - PolicyName: LambdaBasicExecution
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "logs:CreateLogGroup"
+                  - "logs:CreateLogStream"
+                  - "logs:PutLogEvents"
+                Resource: "arn:aws:logs:*:*:*"
+  
+
 Outputs:
   LambdaMioptimizadorRole:
     Description: LambdaMioptimizadorRole Arn
@@ -138,3 +164,9 @@ Outputs:
     Value: !GetAtt LambdaMisupplyRole.Arn
     Export:
       Name: LambdaMisupplyRole-Arn
+
+  LambdaExecutionRoles:
+    Description: LambdaExecutionRoles Arn
+    Value: !GetAtt LambdaExecutionRoles.Arn
+    Export:
+      Name: LambdaExecutionRoles-Arn
