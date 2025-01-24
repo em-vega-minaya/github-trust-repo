@@ -1,0 +1,20 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Resources:
+  MyEventRule:
+      Type: AWS::Events::Rule
+      Properties:
+        ScheduleExpression: "cron(0 12 * * ? *)" # Cambia según la frecuencia que necesites
+        State: "ENABLED"
+        Targets:
+          - Id: "MyLambdaTarget"
+            Arn: !GetAtt MyLambdaFunction.Arn
+
+
+
+Outputs: 
+  MyEventRule:
+    Description: MyEventRule Arn
+    Value: !GetAtt MyEventRule.Arn
+    Export:
+      Name: DA-MyEventRule

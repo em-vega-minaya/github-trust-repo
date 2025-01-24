@@ -3,10 +3,10 @@
         "TEAM": "da"
     },
     {
-        "ENVIRONMENT": "prod"
+        "ENVIRONMENT": "dev"
     },
     {
-        "BRANCH_NAME": "prod"
+        "BRANCH_NAME": "develop"
     },
     {
         "REPOSITORY_NAME":"github-trust-repo"
@@ -22,5 +22,9 @@
     },
     {
         "DB_STAGE":"db_analitycs_prueba"
+    },
+    {
+        "PROYECTO":"ecodistribucion"
     }
   ]
+  

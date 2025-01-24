@@ -22,5 +22,8 @@
   },
   {
       "DB_STAGE":"db_analitycs_prueba"
+  },
+  {
+      "PROYECTO":"ecodistribucion"
   }
 ]
