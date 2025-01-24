@@ -33,7 +33,11 @@ Parameters:
     Description: "tag parameters (all lowercase, no symbols or spaces)"
     Type: List<AWS::EC2::Tag>
 
-
+Conditions:
+  IsTagsSet: !Not
+    - !Equals
+      - !Join [",", !Ref pTag]
+      - ""
 
 Resources:
   myLambdaFunction:
@@ -99,8 +103,13 @@ Resources:
       Layers:
         - !Ref dataWranglerLayer
         - !Ref requestLayer
-      Tags: !Ref pTag
-
+      Tags:
+        - Fn::If:
+            - IsTagsSet
+            - !Split
+              - ","
+              - !Ref pTag
+            - !Ref "AWS::NoValue"
 
   
   dataWranglerLayer:
@@ -124,6 +133,7 @@ Resources:
         S3Key: layers/request-layer-py3-12.zip
       Description: Request Layer for Python 3.12
       LayerName: !Sub request-py3-12-${Stage}
+
 
 
 
