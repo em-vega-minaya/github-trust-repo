@@ -148,9 +148,3 @@ Outputs:
     Value: !GetAtt LambdaMisupplyRole.Arn
     Export:
       Name: LambdaMisupplyRole-Arn
-
-  LambdaExecutionRoles:
-    Description: LambdaExecutionRoles Arn
-    Value: !GetAtt LambdaExecutionRoles.Arn
-    Export:
-      Name: LambdaExecutionRoles-Arn
