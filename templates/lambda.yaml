@@ -125,9 +125,7 @@ Resources:
       Description: Request Layer for Python 3.12
       LayerName: !Sub request-py3-12-${Stage}
 
-Conditions:
-  IsLambdaTagsSet: !Not
-    - !Equals [!Ref pTag, []]
+
 
 
 Outputs: 
