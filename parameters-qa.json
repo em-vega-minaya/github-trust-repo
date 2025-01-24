@@ -1,0 +1,27 @@
+[
+    {
+        "team": "da"
+    },
+    {
+        "environment": "qa"
+    },
+    {
+        "branchName": "qa"
+    },
+    {
+        "repositoryName":"github-trust-repo"
+    },    
+    {
+        "artifactorybucket":"test-artifacts-dev-josemaria"
+    },
+    {
+        "awsAccountId":"039612881651"
+    },
+    {
+        "awsAccountIdPruba":"53453453453"
+    },
+    {
+        "dbStageEcodistribucion":"db_analitycs_prueba"
+    }
+  ]
+  

@@ -24,13 +24,38 @@ jobs:
         run: |
           echo "TIMESTAMP=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
 
-      - name: Define environment
+      - name: Set Parameters File
         run: |
-          if [[ "${{ github.base_ref }}" == "develop" ]]; then
-            echo "ENVIRONMENT=dev" >> $GITHUB_ENV
+          if [[ "${{ github.ref_name }}" == "develop" ]]; then
+            echo "PARAMETERS_FILE=parameters-dev.json" >> $GITHUB_ENV
+          elif [[ "${{ github.ref_name }}" == "qa" ]]; then
+            echo "PARAMETERS_FILE=parameters-qa.json" >> $GITHUB_ENV
+          elif [[ "${{ github.ref_name }}" == "prod" ]]; then
+            echo "PARAMETERS_FILE=parameters-prod.json" >> $GITHUB_ENV
           else
-            echo "ENVIRONMENT=${{ github.base_ref }}" >> $GITHUB_ENV
-          fi
+            echo "PARAMETERS_FILE=tags.json" >> $GITHUB_ENV
+
+      # Paso 2: Leer el JSON y exportar las claves como variables de entorno
+      - name: Load JSON into Environment Variables
+        run: |
+          for row in $(jq -c '.[]' $PARAMETERS_FILE); do
+            key=$(echo $row | jq -r 'keys[0]')
+            value=$(echo $row | jq -r '.[]')
+            echo "${key}=${value}" >> $GITHUB_ENV
+          done
+          echo "Loaded variables from $PARAMETERS_FILE."
+
+      # Paso 3: Validar los valores cargados
+      - name: Validate Variables
+        run: |
+          echo "TEAM: $team"
+          echo "ENVIRONMENT: $environment"
+          echo "BRANCH_NAME: $branchName"
+          echo "REPOSITORY_NAME: $repositoryName"
+          echo "ARTIFACTORY_BUCKET: $artifactorybucket"
+          echo "AWS_ACCOUNT_ID: $awsAccountId"
+          echo "AWS_ACCOUNT_ID_PRUEBA: $awsAccountIdPruba"
+          echo "DB_STAGE: $dbStageEcodistribucion"
 
     
       - name: Checkout Repo
