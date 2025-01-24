@@ -23,10 +23,8 @@ Parameters:
   LIBbucket:
     Type: String
     Description: bucket de artectos
-
-Mappings:
-  TagsMapping:
-    Tags
+  Tags:
+    Description: bucket de artectos
 
 Resources:
   myLambdaFunction:
