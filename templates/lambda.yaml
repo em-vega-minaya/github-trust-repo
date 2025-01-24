@@ -25,9 +25,8 @@ Parameters:
     Description: bucket de artectos
 
 Mappings:
-  Tags:
-    Type: String
-    Description: JSON-formatted tags
+  TagsMapping:
+    Tags
 
 Resources:
   myLambdaFunction:
