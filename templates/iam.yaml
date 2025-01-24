@@ -127,3 +127,8 @@ Outputs:
     Export:
       Name: LambdaMioptimizadorRole-Arn
 
+  LambdaMisupplyRole:
+    Description: LambdaMisupplyRole Arn
+    Value: !GetAtt LambdaMisupplyRole.Arn
+    Export:
+      Name: LambdaMisupplyRole-Arn
