@@ -34,8 +34,8 @@ Resources:
       MemorySize: 256
       Timeout: 30
       Code:
-      S3Bucket: !Ref LIBbucket
-      S3Key:  ./lambda/stage_misupply/src/lambda_function.py
+        S3Bucket: !Ref LIBbucket
+        S3Key:  ./lambda/stage_misupply/src/lambda_function.py
       Role: !ImportValue LambdaMisupplyRole-Arn
       Handler: lambda_function.lambda_handler
       Runtime: python3.9
