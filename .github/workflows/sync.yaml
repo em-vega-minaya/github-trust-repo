@@ -24,11 +24,6 @@ jobs:
         run: |
           echo "TIMESTAMP=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
       
-      - name: Change to repository directory
-        run: |
-          cd /home/runner/work/github-trust-repo/
-          echo "Changed directory to: $(pwd)"
-          ls -l
 
       - name: Set Parameters File
         run: |
