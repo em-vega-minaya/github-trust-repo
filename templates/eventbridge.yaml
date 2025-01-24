@@ -61,7 +61,7 @@ Resources:
       State: ENABLED
       Targets:
         - Id: LambdaTarget
-          -Arn: "arn:aws:lambda:us-east-1:039612881651:function:lambda-example-Josemaria-api_Misupply"
+          Arn: arn:aws:lambda:us-east-1:039612881651:function:lambda-example-Josemaria-api_Misupply
 
 
 
