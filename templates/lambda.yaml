@@ -49,7 +49,7 @@ Resources:
         - !Ref dataWranglerLayer
         - !Ref requestLayer
       Tags:
-        !Sub "${Tags}"
+        !Ref Tags
 
   myLambdaFunction:
     Type: AWS::Lambda::Function
@@ -72,7 +72,7 @@ Resources:
         - !Ref dataWranglerLayer
         - !Ref requestLayer
       Tags:
-        !Sub ${Tags}
+        !Ref Tags
 
   dataWranglerLayer:
     Type: AWS::Lambda::LayerVersion
