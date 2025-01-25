@@ -64,17 +64,6 @@ jobs:
           echo "DB_STAGE=$DB_STAGE"
           echo "AWS_ACCOUNT=$AWS_ACCOUNT"
 
-      - name: Process tags.json
-        id: process-tags
-        run: |
-          TAGS=$(jq -c 'map(to_entries[] | {Key: .key, Value: .value})' tags.json)
-          # Validar que los tags no estén vacíos
-          if [ -z "$TAGS" ]; then
-            echo "Error: No se generaron tags válidos."
-            exit 1
-          fi
-
-          echo "$TAGS"
 
 
         # 2. Configura las credenciales de AWS
@@ -90,6 +79,7 @@ jobs:
       - name: Deploy S3
         id: s3
         shell: bash
+        if: contains(github.event.head_commit.message, '-s3') || contains(github.event.head_commit.message, '-all')
         env:
           S3_STACK_NAME: da-josemaria-s3
         run: |
@@ -118,6 +108,7 @@ jobs:
       #    echo "Folder synchronized to S3 bucket: $AWS_BUCKET_NAME"
       - name: Copy 'src' Folders and Zip lambda_function.py to S3
         id: process-src
+        if: contains(github.event.head_commit.message, '-src') || contains(github.event.head_commit.message, '-all')
         run: |
           # Define el bucket S3
           BUCKET_NAME=$ARTIFACTS_S3
@@ -152,6 +143,7 @@ jobs:
       - name: Deploy SQS
         id: SQS
         shell: bash
+        if: contains(github.event.head_commit.message, '-sqs') || contains(github.event.head_commit.message, '-all')
         env:
           STACK_NAME: da-josemaria-sqs
         run: |
@@ -177,6 +169,7 @@ jobs:
       - name: Deploy IAM
         id: iam
         shell: bash
+        if: contains(github.event.head_commit.message, '-iam') || contains(github.event.head_commit.message, '-all')
         env:
           STACK_NAME: da-josemaria-iam
         run: |
@@ -199,6 +192,7 @@ jobs:
           aws cloudformation describe-stack-events --stack-name $STACK_NAME --max-items 5
 
       - name: Upload layers to S3
+        if: contains(github.event.head_commit.message, '-lambda') || contains(github.event.head_commit.message, '-all')
         run: |
           aws s3 cp ./layers/awswrangler-layer-py3-9.zip s3://$ARTIFACTS_S3/layers/
           aws s3 cp ./layers/request-layer-py3-12.zip s3://$ARTIFACTS_S3/layers/
@@ -212,6 +206,7 @@ jobs:
       - name: Deploy Lambda
         id: lambda
         shell: bash
+        if: contains(github.event.head_commit.message, '-lambda') || contains(github.event.head_commit.message, '-all')
         env:
           STACK_NAME: da-josemaria-lambda
         run: |
@@ -237,6 +232,7 @@ jobs:
       - name: Deploy Events Bridge
         id: events_bridge
         shell: bash
+        if: contains(github.event.head_commit.message, '-bridge') || contains(github.event.head_commit.message, '-all')
         env:
           STACK_NAME: da-josemaria-eventbridge
         run: |
@@ -262,6 +258,7 @@ jobs:
       - name: Deploy Events
         id: events
         shell: bash
+        if: contains(github.event.head_commit.message, '-events') || contains(github.event.head_commit.message, '-all')
         env:
           STACK_NAME: da-josemaria-events
         run: |
@@ -288,7 +285,7 @@ jobs:
       - name: Deploy ATHENA
         id: athena
         shell: bash
-        if: contains(github.event.pull_request.title, '-athena') || contains(github.event.pull_request.title, '-all')
+        if: contains(github.event.head_commit.message, '-athena') || contains(github.event.head_commit.message, '-all')
         env:
           STACK_NAME: da-josemaria-athena
         run: |

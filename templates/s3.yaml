@@ -75,7 +75,7 @@ Resources:
           - Sid: "AccessAccountDatalakeObjectDataSync"
             Effect: "Allow"
             Principal:
-              AWS: "arn:aws:iam::039612881651:root"
+              AWS: "arn:aws:iam::160885287080:root"
             Action:
               - "s3:GetBucketLocation"
               - "s3:ListBucket"
