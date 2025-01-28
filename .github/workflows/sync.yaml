@@ -315,7 +315,7 @@ jobs:
         env:
           STACK_NAME: da-josemaria-catalogoathena
         run: |
-          aws cloudformation deploy --template-file templates/athena.yaml \
+          aws cloudformation deploy --template-file templates/catalogoathena.yaml \
             --region $REGION \
             --stack-name $STACK_NAME \
             --capabilities CAPABILITY_NAMED_IAM \
