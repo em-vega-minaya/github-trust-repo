@@ -309,7 +309,7 @@ jobs:
     
 
       - name: Deploy DATABASE ATHENA
-        id: athena
+        id: athenacatologo
         shell: bash
         if: contains(github.event.head_commit.message, '-catalogoathena')
         env:
