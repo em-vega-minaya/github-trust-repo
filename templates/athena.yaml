@@ -136,7 +136,7 @@ Resources:
             - Name: version5
               Type: string
             - Name: anzfehler
-              Type: int
+              Type: integer
             - Name: fehlklas
               Type: string
             - Name: mbewertg
@@ -156,7 +156,7 @@ Resources:
             - Name: original_input
               Type: string
             - Name: diff_dec_places
-              Type: int
+              Type: integer
             - Name: inpproc_ready
               Type: string
           Compressed: false
