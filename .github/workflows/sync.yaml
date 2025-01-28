@@ -307,4 +307,28 @@ jobs:
                 pdeploymentDate=$TIMESTAMP 
           aws cloudformation describe-stack-events --stack-name $STACK_NAME --max-items 5
     
-  
+
+      - name: Deploy DATABASE ATHENA
+        id: athena
+        shell: bash
+        if: contains(github.event.head_commit.message, '-catalogoathena')
+        env:
+          STACK_NAME: da-josemaria-catalogoathena
+        run: |
+          aws cloudformation deploy --template-file templates/athena.yaml \
+            --region $REGION \
+            --stack-name $STACK_NAME \
+            --capabilities CAPABILITY_NAMED_IAM \
+            --no-fail-on-empty-changeset \
+            --parameter-overrides \
+                pTeamName=$TEAM \
+                Stage=$ENVIRONMENT \
+                pBranchName=$BRANCH_NAME \
+                pArtifactsBucket=$ARTIFACTORY_BUCKET \
+                pAWSRegion=$REGION \
+                pAWSAccountId=$AWS_ACCOUNT_ID \
+                pAWSAccountOptId=$AWS_ACCOUNT_ID_PRUEBA \
+                pdbStageName=$DB_STAGE \
+                pAccountName=$AWS_ACCOUNT \
+                pdeploymentDate=$TIMESTAMP 
+          aws cloudformation describe-stack-events --stack-name $STACK_NAME --max-items 5
