@@ -35,7 +35,7 @@ Resources:
   MyGlueDatabase:
     Type: AWS::Glue::Database
     Properties:
-      CatalogId: !Ref "AWS::AccountId"
+      CatalogId: !Ref pAWSAccountId
       DatabaseInput:
         Name: "prueba_athena_database"
         Description: "Base de datos en el catálogo predeterminado de AWS Glue tablas procesadas"
